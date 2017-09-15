@@ -60,6 +60,8 @@ After some time, check the status:
 
 ```sh
 ./describe_stack.sh
+
+# ==>
 {
     "Stacks": [
         {
@@ -83,10 +85,10 @@ Find a Docker Swarm Manager instance public IP:
 
 ```sh
 ./get_manager_ips.sh
+
 # ==>
 54.79.9.120
-
-Open an ssh tunnel to the manager so you can use `docker` commands directly with the Docker for AWS swarm.
+```
 
 First, add your SSH keypair PEM file to your SSH agent or keychain:
 
@@ -95,8 +97,21 @@ First, add your SSH keypair PEM file to your SSH agent or keychain:
 ssh-add ~/.ssh/DockerTutorial.pem
 ```
 
+You can SSH directly to the Docker manager like so:
+
 ```sh
-./ssh_tunnel.sh 54.79.9.180
+ssh -A docker@54.79.9.120
+docker ps
+exit
+```
+
+But since we want to use scripts and config files locally, we will open an SSH tunnel instead.
+
+Open an ssh tunnel to the manager so you can use `docker` commands directly with the Docker for AWS swarm.
+
+```sh
+./ssh_tunnel.sh 54.79.9.120
+
 # ==>
 Type: export DOCKER_HOST=localhost:2374
 ```
@@ -107,6 +122,7 @@ Set the `DOCKER_HOST` environment variable and test connection to the Docker swa
 export DOCKER_HOST=localhost:2374
 docker info
 
+# ==>
 ...snip...
 Server Version: 17.06.1-ce
 ...snip...
@@ -117,6 +133,16 @@ Labels:
  instance_type=t2.small
  node_type=manager
 ...snip...
+```
+
+The Labels can be used with placement constraints or [preferences](https://docs.docker.com/engine/swarm/services/#specify-service-placement-preferences-placement-pref) (e.g. to evenly distribute services across AZs, not just nodes), e.g.
+
+```sh
+docker service create \
+  --replicas 9 \
+  --name redis_2 \
+  --placement-pref 'spread=node.labels.availability_zone' \
+  redis:3.0.6
 ```
 
 ## Verify your swarm nodes are up and running
@@ -132,13 +158,83 @@ i75ybtjkpdfq2dm8v0lojj7mo     ip-172-31-38-221.ap-southeast-2.compute.internal  
 q3dmtefzvtd075rsfdgl8dxxp     ip-172-31-25-160.ap-southeast-2.compute.internal   Ready               Active
 ```
 
-## Running the app locally
+## (Optional) Running the app locally
 
-Use `docker-compose` to deploy the app locally (using Docker for Mac/Windows or to a Docker host created with Docker Machine).
+If you have Docker setup on your local machine (e.g. for Mac or Docker for Windows) then you can test out the app locally using `docker-compose`:
+
+```sh
+unset DOCKER_HOST
+cd voting-app
+docker-compose -f ./docker-stack.yml up -d
+# This may take a couple of minutes...
+docker-compose ps
+
+# ==>
+       Name                     Command               State            Ports
+-------------------------------------------------------------------------------------
+votingapp_db_1       docker-entrypoint.sh postgres    Up      5432/tcp
+votingapp_redis_1    docker-entrypoint.sh redis ...   Up      0.0.0.0:32768->6379/tcp
+votingapp_result_1   node server.js                   Up      0.0.0.0:5001->80/tcp
+votingapp_vote_1     gunicorn app:app -b 0.0.0. ...   Up      0.0.0.0:5000->80/tcp
+votingapp_worker_1   /bin/sh -c dotnet src/Work ...   Up
+```
+
+Browse to `http://localhost:5000` for the Vote interface.
+Browse to `http://localhost:5001` for the Result interface.
+
+Stop and remove the local application:
+
+```sh
+docker-compose down
+```
+
+Reset the local env to point back to the Docker for AWS manager:
+
+```sh
+cd ..
+export DOCKER_HOST=localhost:2374
+docker node ls
+```
 
 ## Deploy voting app to Docker for AWS
 
-Use `docker stack deploy` with a Docker Compose V3 format YAML file to deploy the app.
+Use `docker stack deploy` with the Docker Compose V3 format YAML file to deploy the app onto the swarm:
+
+```sh
+docker stack deploy votingapp --compose-file voting-app/docker-stack.yml
+
+# ==>
+Creating network votingapp_backend
+Creating network votingapp_frontend
+Creating network votingapp_default
+Creating service votingapp_db
+Creating service votingapp_vote
+Creating service votingapp_result
+Creating service votingapp_worker
+Creating service votingapp_visualizer
+Creating service votingapp_redis
+```
+
+```sh
+docker stack ls
+
+# ==>
+NAME                SERVICES
+votingapp           6
+```
+
+```sh
+docker service ls
+
+# ==>
+ID                  NAME                   MODE                REPLICAS            IMAGE                                          PORTS
+f0t0bqff6opc        votingapp_redis        replicated          1/1                 redis:alpine                                   *:0->6379/tcp
+ge4vah4nc0mp        votingapp_db           replicated          1/1                 postgres:9.4
+ndm6ytoqvaz4        votingapp_visualizer   replicated          1/1                 dockersamples/visualizer:stable                *:8080->8080/tcp
+uwk4s3y27pud        votingapp_worker       replicated          1/1                 dockersamples/examplevotingapp_worker:latest
+vbhjil2sk8z1        votingapp_result       replicated          1/1                 dockersamples/examplevotingapp_result:before   *:5001->80/tcp
+w5rt9x4bt6sw        votingapp_vote         replicated          2/2                 dockersamples/examplevotingapp_vote:before     *:5000->80/tcp
+```
 
 ## Deploy the Swarm Visualiser
 
