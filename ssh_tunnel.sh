@@ -14,7 +14,9 @@
 set -e
 
 DOCKER_MANAGER_PUBLIC_IP="${1:?"Missing Docker Manager Public IP"}"
+DOCKER_HOST=localhost:2374
 
-ssh -o StrictHostKeyChecking=no -A -NL localhost:2374:/var/run/docker.sock "docker@${DOCKER_MANAGER_PUBLIC_IP}" &
+pkill -f "ssh.*localhost:2374" || echo "No existing ssh tunnel found."
+nohup ssh -o StrictHostKeyChecking=no -A -NL "${DOCKER_HOST}":/var/run/docker.sock "docker@${DOCKER_MANAGER_PUBLIC_IP}" > /tmp/docker-ssh.log 2>&1 &
 
-echo "Type: export DOCKER_HOST=localhost:2374"
+echo "Type: export DOCKER_HOST=${DOCKER_HOST}"

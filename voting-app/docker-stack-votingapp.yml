@@ -1,0 +1,108 @@
+version: "3.3"
+services:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379"
+    networks:
+      - frontend
+      # - logging
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: postgres:9.4
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+      # - logging
+    deploy:
+      placement:
+        # When host volumes are used, we would need to run the db on the same node each time.
+        constraints: [node.role == manager]
+
+  vote:
+    image: dockersamples/examplevotingapp_vote:before
+    networks:
+      - traefik
+      - frontend
+      # - logging
+    depends_on:
+      - redis
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     fluentd-address: 127.0.0.1:24224
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik"
+        - "traefik.frontend.rule=Host:vote.${DOMAIN_NAME}"
+
+  result:
+    image: dockersamples/examplevotingapp_result:before
+    networks:
+      - traefik
+      - backend
+      # - logging
+    depends_on:
+      - db
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     fluentd-address: 127.0.0.1:24224
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik"
+        - "traefik.frontend.rule=Host:result.${DOMAIN_NAME}"
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - frontend
+      - backend
+      # - logging
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     fluentd-address: 127.0.0.1:24224
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+networks:
+  frontend:
+  backend:
+  # logging:
+  #   external: true
+  traefik:
+    external: true
+
+volumes:
+  db-data:

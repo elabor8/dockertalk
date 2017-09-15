@@ -1,0 +1,65 @@
+
+version: '3.3'
+services:
+
+  fluentd:
+    image: dockertutorial/fluentd-elasticsearch
+    networks:
+      - logging
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    logging:
+      driver: json-file
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+    environment:
+      ES_JAVA_OPTS: '-Xms256m -Xmx256m'
+      xpack.security.enabled: 'false'
+      xpack.monitoring.enabled: 'false'
+      xpack.graph.enabled: 'false'
+      xpack.watcher.enabled: 'false'
+    # volumes:
+    #   - esdata1:/usr/share/elasticsearch/data
+    volumes:
+      - esdata_shared:/usr/share/elasticsearch/data
+    networks:
+      - logging
+    logging:
+      driver: json-file
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      # placement:
+      #   constraints: [node.role == manager]
+      resources:
+        limits:
+          memory: 1g
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.5.2
+    ports:
+      - "5601:5601"
+    networks:
+      - logging
+    logging:
+      driver: json-file
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  logging:
+    external: true
+
+volumes:
+  # esdata1:
+  esdata_shared:
+    external: true

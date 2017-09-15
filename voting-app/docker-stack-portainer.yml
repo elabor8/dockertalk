@@ -1,0 +1,28 @@
+version: "3.3"
+services:
+
+  portainer:
+    image: portainer/portainer
+    networks:
+      - traefik
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - "traefik.port=9000"
+        - "traefik.docker.network=traefik"
+        - "traefik.frontend.rule=Host:portainer.${DOMAIN_NAME}"
+
+networks:
+  traefik:
+    external: true

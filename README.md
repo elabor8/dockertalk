@@ -266,9 +266,17 @@ Later we will expose services using TLS termination on the ELB.
 
 Browse to the Swarm Visualizer : http://<elb_dns_name>:8080
 
+Undeploy the stack so we can use a custom reverse proxy as the entrypoint to the swarm:
+
+```sh
+docker stack rm votingapp
+```
+
 ## Deploy Traefik reverse proxy
 
-The Docker for AWS setup currently only creates an ELB (Layer 4) not an ALB (Layer 7).  This means we have to use another Layer 7 reverse proxy to route to our services in the swarm over a single port (443 or 80).
+The Docker for AWS setup currently only creates an ELB (Layer 4) not an ALB (Layer 7).  This means we have to use a custom Layer 7 reverse proxy to route to our services in the swarm over a single port (443 or 80).
+
+We will use a Traefik service with a published port on port 443 to handle internal routing on the swarm ingress load balancer (routing mesh).
 
 ### With a custom domain name, ACM certificate and Route 53 DNS setup
 
@@ -298,7 +306,60 @@ Record the ARN for the ACM certificate, e.g: `arn:aws:acm:ap-southeast-2:XXXXXXX
 
 This will be needed for Traefik later.
 
-TODO
+Copy the file `prod.env.template` to `prod.env` and update the environment variables with your domain name and ACM certificate ARN:
+
+```sh
+DOMAIN_NAME=<your_domain>
+ACM_CERT_ARN=<your_acm_cert_arn>
+```
+
+Create the overlay network for Traefik and other services to communicate within the swarm:
+
+```sh
+docker network create -d overlay traefik
+```
+
+Deploy the Traefik stack to the swarm:
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-traefik.yml prod.env
+```
+
+Browse to the Traefik dashboard: http://traefik.dockertutorial.technology:8000/
+(No services displayed yet.)
+
+Deploy the Voting App stack to the swarm:
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-votingapp.yml prod.env
+```
+
+Let's check our stacks:
+
+```sh
+docker stack ls
+
+# ==>
+NAME                SERVICES
+traefik             1
+votingapp           5
+```
+
+Thanks to Traefik, we can now browse to the vote and result apps:
+
+Browse to: https://vote.dockertutorial.technology
+Browse to: https://result.dockertutorial.technology
+
+TLS is [setup automatically for us in the ELB](https://docs.docker.com/docker-for-aws/load-balancer/) by the `com.docker.aws.lb.arn` label:
+
+```yaml
+traefik:
+  deploy:
+    ...snip...
+    labels:
+      ...snip...
+      - "com.docker.aws.lb.arn=${ACM_CERT_ARN}"
+```
 
 ### Alternative: no custom domain - using path routing
 
@@ -306,7 +367,29 @@ There will be no TLS termination on the ELB using this method (Traefik does supp
 
 TODO
 
+## Deploy the Swarm Visualizer
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-visualizer.yml prod.env
+```
+
+Browse to: https://vizualizer.dockertutorial.technology
+
 ## Deploy Portainer
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-portainer.yml prod.env
+```
+
+Browse to: https://portainer.dockertutorial.technology
+
+**Note**: Normally, you would use a [persistent volume for Portainer](https://portainer.readthedocs.io/en/stable/deployment.html#persist-portainer-data) to retain state.  In this demo we will not use a volume.
+
+Scale up the vote service to 2 containers then try voting and see that different containers process the vote.
+
+Check the Traefik dashboard now: http://traefik.dockertutorial.technology:8000
+
+Check the health page as well: http://traefik.dockertutorial.technology:8000/dashboard/#/health
 
 ## Deploy Logging
 
@@ -323,3 +406,7 @@ TODO
 ## Rolling updates (V1 -> V2) – Zero downtime
 
 ## Teardown
+
+## Credits
+
+The voting app was copied from Docker Samples here: https://github.com/dockersamples/example-voting-app

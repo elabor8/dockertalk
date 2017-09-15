@@ -1,0 +1,30 @@
+version: "3.3"
+services:
+
+  traefik:
+    image: traefik
+    ports:
+      - "443:80"
+      - "8000:8080" # For demo purposes: Don't normally publish this publicly.
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - traefik
+    command: --docker --debug --docker.swarmmode --docker.domain=${DOMAIN_NAME} --docker.watch --web
+    logging:
+      driver: json-file
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - "traefik.enable=true"
+        - "traefik.frontend.passHostHeader=true"
+        - "traefik.frontend.entryPoints=http"
+        - "traefik.docker.network=traefik"
+        - "com.docker.aws.lb.arn=${ACM_CERT_ARN}"
+      restart_policy:
+        condition: on-failure
+
+networks:
+  traefik:
+    external: true

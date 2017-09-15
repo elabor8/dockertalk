@@ -1,0 +1,25 @@
+version: "3.3"
+
+services:
+
+  # Swarm visualizer UI to show placement of containers in the swarm
+  visualizer:
+    image: dockersamples/visualizer:stable
+    networks:
+      - traefik
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.port=8080"
+        - "traefik.docker.network=traefik"
+        - "traefik.frontend.rule=Host:visualizer.${DOMAIN_NAME}"
+
+networks:
+  traefik:
+    external: true
