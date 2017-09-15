@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Copy this file and rename to remove the '.template' extension.
+# Fill in values for your use.
+
+# Specify an AWS CLI profile or leave blank for the default profile
+export AWS_PROFILE=<your_aws_profile>
+
+# Use "ap-southeast-2" for Asia Pacific (Sydney); otherwise "us-east-1" for US East (N. Virginia)
+export AWS_REGION=<your_preferred_region>
+
+# CloudFormation template to use for Docker for AWS
+export CF_TEMPLATE_URL=https://editions-us-east-1.s3.amazonaws.com/aws/stable/Docker.tmpl
+
+# Specify an IAM Role to use for the AWS CloudFormation Service Role or leave blank to use your user's permissions
+export CF_ROLE_ARN=<iam_role_for_cloudformation>
+
+# Leave this as is
+if [[ ! -z "${CF_ROLE_ARN}" ]]; then
+  CF_ROLE_PARAM="--role-arn ${CF_ROLE_ARN}"
+else
+  CF_ROLE_PARAM=""
+fi
+
+export CF_ROLE_PARAM
