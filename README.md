@@ -234,9 +234,77 @@ ndm6ytoqvaz4        votingapp_visualizer   replicated          1/1              
 uwk4s3y27pud        votingapp_worker       replicated          1/1                 dockersamples/examplevotingapp_worker:latest
 vbhjil2sk8z1        votingapp_result       replicated          1/1                 dockersamples/examplevotingapp_result:before   *:5001->80/tcp
 w5rt9x4bt6sw        votingapp_vote         replicated          2/2                 dockersamples/examplevotingapp_vote:before     *:5000->80/tcp
+
+# You can also see the tasks for a service:
+docker service ps votingapp_vote
 ```
 
-## Deploy the Swarm Visualiser
+To access the voting app that is deployed to the swarm, you will need the ELB name:
+
+```sh
+./get_elb_names.sh
+
+# ==>
+"DNSName": "DockerTut-External-P2N78KBI3BAI-1241970304.ap-southeast-2.elb.amazonaws.com",
+```
+
+You can now access each service which have published ports at:
+
+`http://DockerTut-External-P2N78KBI3BAI-1241970304.ap-southeast-2.elb.amazonaws.com:<published_port>`
+
+Try accessing the exposed services:
+
+* Vote : http://<elb_dns_name>:5000
+* Result : http://<elb_dns_name>:5001
+* Visualizer : http://<elb_dns_name>:8080
+
+**Note**: These are exposed as HTTP by default since the ELB is not terminating TLS.  It is acting as a Layer 4 LB and reverse proxy.  This feature is setup automatically as part of Docker for AWS.
+
+Later we will expose services using TLS termination on the ELB.
+
+## Check the Swarm Visualiser
+
+Browse to the Swarm Visualizer : http://<elb_dns_name>:8080
+
+## Deploy Traefik reverse proxy
+
+The Docker for AWS setup currently only creates an ELB (Layer 4) not an ALB (Layer 7).  This means we have to use another Layer 7 reverse proxy to route to our services in the swarm over a single port (443 or 80).
+
+### With a custom domain name, ACM certificate and Route 53 DNS setup
+
+We will use a custom domain name and ACM wildcard certificate to get TLS termination working on the ELB and then use Traefik to route to services internally in the swarm via a host header.
+
+Prerequisite: A custom domain name (e.g. `mydomain.com`)
+
+In Route 53, create a Hosted Zone for your domain.
+
+In your DNS registrar, point it to at least two of the DNS servers assigned by AWS (in your NS record).
+
+Create a host wildcard record in your hosted zone (A record of type alias):
+
+Name: `*.mydomain.com`
+Type: `A - IPv4 address`
+Alias: `Yes`
+Alias Target: `<Select your ELB DNS NAme from the list>`
+ß
+Leave the remaining fields as is.
+Create the record.
+
+Go to Amazon Certificate Manager and create a free wildcard certificate for your domain: `*.mydomain.com`
+
+Approve the certificate request in your email.
+
+Record the ARN for the ACM certificate, e.g: `arn:aws:acm:ap-southeast-2:XXXXXXXXXXXX:certificate/e807ff24-1988-428e-a326-8e`d928d535b6
+
+This will be needed for Traefik later.
+
+TODO
+
+### Alternative: no custom domain - using path routing
+
+There will be no TLS termination on the ELB using this method (Traefik does supports TLS itself but that is beyond the scope of this tutorial).
+
+TODO
 
 ## Deploy Portainer
 
