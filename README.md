@@ -618,14 +618,73 @@ Check the Results: https://result.dockertutorial.technology/
 
 ## Exercise: Scaling up / down services
 
-Scale up the `worker` service and check Kibana logs:
+Scale up some of the services and check Kibana logs:
 
 docker service scale votingapp_worker=3
+docker service scale votingapp_vote=3
+
+## Drain node
+
+Pick a node (not master) and not the one with the `db` on it.
+
+Use `docker node ls` to find the right one.
+
+Set it to `drain` to move containers:
+
+```sh
+docker node update --availability=drain a3o4uvlpdtrbcpxwu9hou4fsf
+```
+
+Check the Visualizer: https://visualizer.dockertutorial.technology/
+
+All containers have moved off this node.  Now you can perform any maintenance or leave it as is (common for manager nodes).
+
+Let's set it back to `active`:
+
+```sh
+docker node update --availability=active a3o4uvlpdtrbcpxwu9hou4fsf
+```
 
 ## Exercise: Swarm Service Rolling updates
 
-(V1 -> V2) – Zero downtime
-Change config via Env variables.
+When deploying updates to services (e.g. new image or config/secrets/env vars), swarm uses a rolling update strategy to achieve zero-downtime deployment (you can combine this with built-in [healthchecks](https://docs.docker.com/compose/compose-file/#healthcheck)).
+
+See the Compose file:
+
+```
+deploy:
+  replicas: 1
+  update_config:
+    parallelism: 2
+    delay: 10s
+```
+
+This means 2 containers will be updated at a time with a 10 sec delay between groups of containers.  you can also set a `failure_action` (e.g. to `rollback` or `continue` or `pause`).
+
+Let's make a config change using environment variables and roll out the change to the `vote` instances.
+
+In the `vote` service, add:
+
+```yaml
+environment:
+  OPTION_A: Pigs
+  OPTION_B: Hamsters
+```
+
+Also set replicas to `3` for the `vote` service:
+
+```yaml
+deploy:
+  replicas: 3
+```
+
+Deploy the `votingapp` stack again to perform a rolling update:
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-votingapp.yml prod.env
+```
+
+And watch the Visualizer: https://visualizer.dockertutorial.technology/
 
 ## Exercise: Deploy Monitoring
 
