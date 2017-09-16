@@ -79,6 +79,8 @@ After some time, check the status:
 When the stack is ready, the `StackStatus` will be `CREATE_COMPLETE`.
 If the stack creation fails, the `StackStatus` will be `ROLLBACK_COMPLETE`.
 
+**For demo**: Open AWS Console in a tab to show ELB, instances, etc.
+
 ## Setup the local environment to talk to a Swarm Manager
 
 Find a Docker Swarm Manager instance public IP:
@@ -453,7 +455,27 @@ Auto-refresh every 10 secs.
 
 Try voting a few times then check the logs (try query: Processing vote for '?')
 
-### (Optional) Create a visualisation - tally of all votes
+## Scaling up / down
+
+Scale up the `worker` service and check Kibana logs:
+
+docker service scale votingapp_worker=3
+
+Try query: worker
+
+Check Portainer and Vizualiser.
+
+## Volumes: Handling application state
+
+No volumes: Drain node, state is lost
+
+## With Volumes (Cloudstor) - drain node, move to another node (state is retained)
+
+## Swarm Service Rolling updates
+
+(V1 -> V2) – Zero downtime
+
+## (Optional) Create a visualisation in Kibana - tally of all votes
 
 Click 'Vizualise'
 Click 'Create Visualization'
@@ -481,16 +503,6 @@ Maximise the dashboard
 Try voting some more and check the dashboard.
 
 Any data that is logged can be searched and made into a dashboard for key performance or business metrics.
-
-## Scaling up / down
-
-Scale up the `worker` service and check Kibana logs:
-
-docker service scale votingapp_worker=3
-
-Try query: worker
-
-Check Portainer and Vizualiser.
 
 ## Deploy Monitoring
 
@@ -529,13 +541,14 @@ Import the JSON dashboard: `docker-prometheus-swarm/dashboards/docker-swarm-cont
 
 Inspect some of the metrics available.
 
-## No volumes: Drain node, state is lost
-
-## With Volumes (Cloudstor) - drain node, move to another node (state is retained)
-
-## Rolling updates (V1 -> V2) – Zero downtime
-
 ## Teardown
+
+docker stack rm logging monitoring portainer traefik votingapp visualizer
+docker network prune
+docker volume prune
+docker container prune
+docker image prune # If you want to remove all unused images and reclaim space
+docker config rm prometheus.yml alert.rules_services
 
 ## Credits
 
