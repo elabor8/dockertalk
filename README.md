@@ -518,7 +518,7 @@ Try query: worker
 
 Check Portainer and Vizualiser.
 
-## Exercise: Volumes - Handling application state in the cluster
+## (Optional) Exercise: Volumes - Handling application state in the cluster
 
 ### No volumes: Drain node, state is lost
 
@@ -527,6 +527,7 @@ Check Portainer and Vizualiser.
 ## Exercise: Swarm Service Rolling updates
 
 (V1 -> V2) – Zero downtime
+Change config via Env variables.
 
 ## (Optional) Exercise: Create a visualisation in Kibana - tally of all votes
 
@@ -578,6 +579,8 @@ docker config create alert.rules_services docker-prometheus-swarm/rootfs/etc/pro
 # Check config exists
 docker config ls
 ```
+
+**Note**: Swarm supports secrets too, there are encrypted.
 
 ### Deploy the monitoring stack
 

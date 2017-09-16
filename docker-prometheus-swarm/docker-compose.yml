@@ -98,9 +98,7 @@ services:
       - "9090:9090"
     networks:
       - monitoring
-
-    # command: -config.file=/etc/prometheus/prometheus.yml -storage.local.path=/prometheus -web.console.libraries=/etc/prometheus/console_libraries -web.console.templates=/etc/prometheus/consoles -alertmanager.url=http://alertmanager:9093
-    command: -config.file=/run/secrets/prometheus.yml -storage.local.path=/prometheus -web.console.libraries=/etc/prometheus/console_libraries -web.console.templates=/etc/prometheus/consoles -alertmanager.url=http://alertmanager:9093
+    command: -config.file=/prometheus.yml -storage.local.path=/prometheus -web.console.libraries=/etc/prometheus/console_libraries -web.console.templates=/etc/prometheus/consoles -alertmanager.url=http://alertmanager:9093
     deploy:
       mode: replicated
       replicas: 1
@@ -111,7 +109,7 @@ services:
         reservations:
           cpus: '0.50'
           memory: 128M
-    secrets:
+    configs:
       - prometheus.yml
       - alert.rules_services
 
