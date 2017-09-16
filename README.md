@@ -756,7 +756,7 @@ docker config rm prometheus.yml alert.rules_services
 
 ## Delete the CloudFormation stack
 
-Clean up all AWs resources.
+Clean up all AWS resources.
 
 ```sh
 ./delete_stack.sh
@@ -764,4 +764,9 @@ Clean up all AWs resources.
 
 ## Credits
 
-The voting app was copied from Docker Samples here: https://github.com/dockersamples/example-voting-app
+The voting app was copied from Docker Samples:
+* https://github.com/dockersamples/example-voting-app
+
+Monitoring dashboard and Docker Compose file - [Basilio Vera](https://github.com/bvis):
+
+* https://github.com/bvis/docker-prometheus-swarm
