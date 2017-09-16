@@ -53,7 +53,7 @@ pip install awscli
 or on Mac, using [Homebrew](https://brew.sh/):
 
 ```sh
-brew install aswcli
+brew install awscli
 ```
 
 ### Windows:
@@ -434,6 +434,27 @@ Which the most popular pet?  Cats or Dogs?
 Browse to: https://vote.dockertutorial.technology on your mobiles.
 Check results at: https://result.dockertutorial.technology
 
+## (Optional) Exercise: Volumes - Handling application state in the cluster
+
+### No volumes: Drain node, state is lost
+
+### With Volumes (Cloudstor) - drain node, move to another node (state is retained)
+
+## Exercise: Scaling up / down services
+
+Scale up the `worker` service and check Kibana logs:
+
+docker service scale votingapp_worker=3
+
+Try query: worker
+
+Check Portainer and Vizualiser.
+
+## Exercise: Swarm Service Rolling updates
+
+(V1 -> V2) – Zero downtime
+Change config via Env variables.
+
 ## Exercise: Deploy Portainer
 
 ```sh
@@ -508,27 +529,6 @@ Auto-refresh every 10 secs.
 
 Try voting a few times then check the logs (try query: Processing vote for '?')
 
-## Exercise: Scaling up / down services
-
-Scale up the `worker` service and check Kibana logs:
-
-docker service scale votingapp_worker=3
-
-Try query: worker
-
-Check Portainer and Vizualiser.
-
-## (Optional) Exercise: Volumes - Handling application state in the cluster
-
-### No volumes: Drain node, state is lost
-
-### With Volumes (Cloudstor) - drain node, move to another node (state is retained)
-
-## Exercise: Swarm Service Rolling updates
-
-(V1 -> V2) – Zero downtime
-Change config via Env variables.
-
 ## (Optional) Exercise: Create a visualisation in Kibana - tally of all votes
 
 Click 'Vizualise'
@@ -599,12 +599,22 @@ Inspect some of the metrics available.
 
 ## Exercise: Teardown
 
+```sh
 docker stack rm logging monitoring portainer traefik votingapp visualizer
 docker network prune
 docker volume prune
 docker container prune
 docker image prune # If you want to remove all unused images and reclaim space
 docker config rm prometheus.yml alert.rules_services
+```
+
+## Delete the CloudFormation stack
+
+Clean up all AWs resources.
+
+```sh
+./delete_stack.sh
+```
 
 ## Credits
 
