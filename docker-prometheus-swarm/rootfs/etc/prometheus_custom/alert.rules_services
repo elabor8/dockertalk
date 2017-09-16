@@ -1,0 +1,7 @@
+ALERT cadvisor_not_on_all_hosts
+  IF count(rate(container_last_seen{container_label_com_docker_swarm_service_name="monitoring_cadvisor"}[5m])) < 3
+  FOR 30s
+  ANNOTATIONS {
+      summary = "CADVISOR WARNING: Not running on all hosts'",
+      description = "cAdvisor service is missing containers. Container count is {{ $value }}.",
+  }

@@ -494,6 +494,41 @@ Check Portainer and Vizualiser.
 
 ## Deploy Monitoring
 
+For this demo we'll deploy a monitoring stack consisting off: cAdvisor (host/container meterics) + Prometheus (server + alarm manager) + Grafana (dashboard)
+
+Alternatives:
+
+* Sysdig, Datadog, CloudWatch, APM tools (Dynatrace, AppDynamics, etc.)
+
+UCP provides some monitoring too: https://docs.docker.com/datacenter/ucp/1.1/monitor/monitor-ucp/
+
+We'll use this setup as it works: https://github.com/bvis/docker-prometheus-swarm and its dashboard: https://grafana.com/dashboards/609
+
+### Create config for Prometheus
+
+```sh
+docker config create prometheus.yml docker-prometheus-swarm/rootfs/etc/prometheus_custom/prometheus.yml
+docker config create alert.rules_services docker-prometheus-swarm/rootfs/etc/prometheus_custom/alert.rules_services
+
+# Check config exists
+docker config ls
+```
+
+### Monitoring stack
+
+./deploy_stack.sh voting-app/docker-stack-monitoring.yml prod.env
+
+Check the monitoring services:
+
+Browse to: https://alertmanager.dockertutorial.technology
+Browse to: https://prometheus.dockertutorial.technology
+Browse to: https://alertmanager.dockertutorial.technology
+Browse to: https://grafana.dockertutorial.technology
+
+Import the JSON dashboard: `docker-prometheus-swarm/dashboards/docker-swarm-container-overview_rev23_no_logging.json`
+
+Inspect some of the metrics available.
+
 ## No volumes: Drain node, state is lost
 
 ## With Volumes (Cloudstor) - drain node, move to another node (state is retained)

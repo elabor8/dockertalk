@@ -7,7 +7,7 @@ services:
       - "6379"
     networks:
       - frontend
-      # - logging
+      - logging
     deploy:
       replicas: 1
       update_config:
@@ -22,7 +22,7 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       - backend
-      # - logging
+      - logging
     deploy:
       placement:
         # When host volumes are used, we would need to run the db on the same node each time.
@@ -33,13 +33,13 @@ services:
     networks:
       - traefik
       - frontend
-      # - logging
+      - logging
     depends_on:
       - redis
-    # logging:
-    #   driver: fluentd
-    #   options:
-    #     fluentd-address: 127.0.0.1:24224
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     deploy:
       replicas: 1
       update_config:
@@ -57,13 +57,13 @@ services:
     networks:
       - traefik
       - backend
-      # - logging
+      - logging
     depends_on:
       - db
-    # logging:
-    #   driver: fluentd
-    #   options:
-    #     fluentd-address: 127.0.0.1:24224
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     deploy:
       replicas: 1
       update_config:
@@ -81,11 +81,11 @@ services:
     networks:
       - frontend
       - backend
-      # - logging
-    # logging:
-    #   driver: fluentd
-    #   options:
-    #     fluentd-address: 127.0.0.1:24224
+      - logging
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     deploy:
       mode: replicated
       replicas: 1
@@ -99,8 +99,8 @@ services:
 networks:
   frontend:
   backend:
-  # logging:
-  #   external: true
+  logging:
+    external: true
   traefik:
     external: true
 
