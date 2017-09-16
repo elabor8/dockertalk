@@ -1,7 +1,9 @@
-Demo - Using Docker in production: Get started today!
-=====================================================
+Using Docker in production: Get started today!
+==============================================
 
-*Version: Docker CE v17.06*
+## Demo script
+
+*Version: Docker CE for AWS (v17.06)*
 
 *A talk by Clarence Bakirtzidis - Email: [clarence.bakirtzidis@elabor8.com.au](mailto:clarence.bakirtzidis@elabor8.com.au), Twitter: [@clarenceb_oz](https://twitter.com/clarenceb_oz)*
 
@@ -33,7 +35,52 @@ You can use either the AWS Management Console (browser based) or use the AWS CLI
 
 ## Install the AWS CLI and configure your AWS access keys
 
-TODO
+### Installation
+
+Refer to the [AWS Command Line Reference](https://aws.amazon.com/cli/).
+
+Simplest way to install:
+
+### Mac / Linux:
+
+```sh
+# Requires Python 2.6.5 or higher. Install using pip.
+pip install awscli
+```
+
+or on Mac, using [Homebrew](https://brew.sh/):
+
+```sh
+brew install aswcli
+```
+
+### Windows:
+
+Download and run the [64-bit](https://s3.amazonaws.com/aws-cli/AWSCLI64.msi) or [32-bit](https://s3.amazonaws.com/aws-cli/AWSCLI32.msi) Windows installer.
+
+### Configuration
+
+See the [Configuring the AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) page.
+
+For default profile:
+
+```sh
+aws configure
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: ap-southeast-2
+Default output format [None]: json
+```
+
+For custom profile:
+
+```sh
+aws configure --profile dockertutorial
+AWS Access Key ID [None]: AKIAI44QH8DHBEXAMPLE
+AWS Secret Access Key [None]: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
+Default region name [None]: ap-southeast-2
+Default output format [None]: json
+```
 
 ## Provision a Docker for AWS cluster
 
