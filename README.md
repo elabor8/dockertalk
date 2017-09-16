@@ -559,8 +559,18 @@ Re-deploy the votingapp:
 ./deploy_stack.sh voting-app/docker-stack-votingapp.yml prod.env
 ```
 
+Make sure db has moved to a different host.
+
 Check the Results: https://result.dockertutorial.technology/
 There should no votes -- the state was lost since the host volume was left on the manager node and a new one was created.
+
+If result is now showing anything (not votes in the bottom right corner), you might need to scale result to 0 then back to 1:
+
+```sh
+docker service scale votingapp_result=0
+# wait a bit...
+docker service scale votingapp_result=1
+```
 
 ### With Volumes (using Cloudstor volume plugin)
 
@@ -615,6 +625,14 @@ Re-deploy the voting app:
 Create some votes: https://vote.dockertutorial.technology/
 
 Check the Results: https://result.dockertutorial.technology/
+
+If you need to move the `db` service (without draining a whole node) try:
+
+```sh
+docker service scale votingapp_db=0
+# wait a bit...
+docker service scale votingapp_db=1
+```
 
 ## Exercise: Scaling up / down services
 
