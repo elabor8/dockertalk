@@ -36,7 +36,6 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-      # Remove this restriction to see that state is lost with a host-only volume.
       placement:
         constraints: [node.role == manager]
       resources:
@@ -70,5 +69,3 @@ networks:
 
 volumes:
   esdata:
-    # After creating an external volume with Cloudstor, set external: true
-    # external: true

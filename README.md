@@ -434,27 +434,6 @@ Which the most popular pet?  Cats or Dogs?
 Browse to: https://vote.dockertutorial.technology on your mobiles.
 Check results at: https://result.dockertutorial.technology
 
-## (Optional) Exercise: Volumes - Handling application state in the cluster
-
-### No volumes: Drain node, state is lost
-
-### With Volumes (Cloudstor) - drain node, move to another node (state is retained)
-
-## Exercise: Scaling up / down services
-
-Scale up the `worker` service and check Kibana logs:
-
-docker service scale votingapp_worker=3
-
-Try query: worker
-
-Check Portainer and Vizualiser.
-
-## Exercise: Swarm Service Rolling updates
-
-(V1 -> V2) – Zero downtime
-Change config via Env variables.
-
 ## Exercise: Deploy Portainer
 
 ```sh
@@ -468,10 +447,6 @@ Browse to: https://portainer.dockertutorial.technology
 Scale up the vote service to 2 containers then try voting and see that different containers process the vote.
 
 In Portainer, check the logs (e.g. traefik) and console (e.g. db) for a running container.
-
-Check the Traefik dashboard now: http://traefik.dockertutorial.technology:8000
-
-Check the health page as well: http://traefik.dockertutorial.technology:8000/dashboard/#/health
 
 **Note:** Exposing Portainer is a security risk - do not expose it publicly!
 
@@ -557,6 +532,100 @@ Maximise the dashboard
 Try voting some more and check the dashboard.
 
 Any data that is logged can be searched and made into a dashboard for key performance or business metrics.
+
+## (Optional) Exercise: Volumes - Handling application state in the cluster
+
+In a cluster, application state should not be kept inside containers.  However, if we use host volumes, then the data is not portable -- we need to use constraints on services to limit where they can run which is not very practical.
+
+Various Docker Volume plugins exist to help solve this problem.  With Docker for AWS, the [Cloudstor plugin](https://docs.docker.com/docker-for-aws/persistent-data-volumes) is setup which supports EBS and EFS based backing stores.  This driver enables data to travel with the service tasks (containers) even when they get rescheduled.
+
+### Without portable volumes
+
+If we move the DB container to another host then we'll loose state in the DB.
+
+Check the Results: https://result.dockertutorial.technology/
+There should be some votes.
+
+Check the Visualizer: https://visualizer.dockertutorial.technology/
+The voting app database should be running on the manager node.
+
+Update the `db` service contraint in `voting-app/docker-stack-votingapp.yml` to be:
+
+`constraints: [node.role != manager]`
+
+Re-deploy the votingapp:
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-votingapp.yml prod.env
+```
+
+Check the Results: https://result.dockertutorial.technology/
+There should no votes -- the state was lost since the host volume was left on the manager node and a new one was created.
+
+### With Volumes (using Cloudstor volume plugin)
+
+Let's create a portal volume using EFS and the CloudStor volume plugin.
+
+```sh
+docker volume create -d "cloudstor:aws" --opt backing=shared db-votes
+```
+
+```sh
+docker volume ls
+DRIVER              VOLUME NAME
+...snip...
+cloudstor:aws       db-votes
+...snip...
+```
+
+This will use EFS (for DBs with a lot of writes, you should use EBS but moving EBS volumes between hosts is a slower process so for the dmeo we use EFS).
+
+Update the voting app stack to use the external `db-votes` volume:
+
+```yaml
+volumes:
+  db-data:
+  db-votes:
+    external: true
+```
+
+Update the `db` service to use the new volume:
+
+```yaml
+db:
+  image: postgres:9.4
+  volumes:
+    - db-votes:/var/lib/postgresql/data
+```
+
+You can remove the placement constraint too:
+
+```yaml
+# deploy:
+  # placement:
+    # constraints: [node.role != manager]
+```
+
+Re-deploy the voting app:
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-votingapp.yml prod.env
+```
+
+Create some votes: https://vote.dockertutorial.technology/
+
+Check the Results: https://result.dockertutorial.technology/
+
+## Exercise: Scaling up / down services
+
+Scale up the `worker` service and check Kibana logs:
+
+docker service scale votingapp_worker=3
+
+## Exercise: Swarm Service Rolling updates
+
+(V1 -> V2) – Zero downtime
+Change config via Env variables.
 
 ## Exercise: Deploy Monitoring
 

@@ -20,6 +20,7 @@ services:
   db:
     image: postgres:9.4
     volumes:
+      # - db-votes:/var/lib/postgresql/data
       - db-data:/var/lib/postgresql/data
     networks:
       - backend
@@ -27,8 +28,8 @@ services:
       # - logging
     deploy:
       placement:
-        # When host volumes are used, we would need to run the db on the same node each time.
-        constraints: [node.role == manager]
+        # Demo: Constraint for DB placement
+        constraints: [node.role != manager]
 
   vote:
     image: dockersamples/examplevotingapp_vote:before
@@ -112,3 +113,5 @@ networks:
 
 volumes:
   db-data:
+  # db-votes:
+  #   external: true
