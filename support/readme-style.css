@@ -448,6 +448,7 @@
   font-size: 85%;
   background-color: rgba(0,0,0,0.04);
   border-radius: 3px;
+  border: 1px solid #929292;
 }
 
 .markdown-body code:before,
@@ -655,25 +656,32 @@
 // info boxes
 // See: http://demos.cyberchimps.com/responsivepro/css-info-boxes/
 
-.important {
+.info-box.warning {
   background-color: #faebeb;
   border: 1px solid #dc7070;
   color: #212121;
 }
 
-.success {
+.info-box.exercise {
+  background-color: #daf1df;
+  border: 2px solid #75d78a;
+  color: #0b2812;
+  padding: 10px 5px;
+}
+
+.info-box.success {
   background-color: #f9fde8;
   border: 1px solid #a2bc13;
   color: #212121;
 }
 
-.information {
+.info-box.information {
   background-color: #eef3f6;
   border: 1px solid #6ca6cd;
   color: #212121;
 }
 
-.notice {
+.info-box.notice {
   background-color: #fbf9e9;
   border: 1px solid #e3cf57;
   color: #212121;
@@ -688,4 +696,3 @@
   padding: 15px;
   text-align: left;
 }
-

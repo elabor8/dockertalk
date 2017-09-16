@@ -1,7 +1,7 @@
 Using Docker in production: Get started today!
 ==============================================
 
-## Demo script
+<h2 class="info-box exercise">Demo script</h2>
 
 *Version: Docker CE for AWS (v17.06)*
 
@@ -16,11 +16,13 @@ There are two ways to deploy Docker for AWS:
 
 You can use either the AWS Management Console (browser based) or use the AWS CLI (command-line based).
 
-*Note: there will be some costs associated with running through this tutorial on AWS but these costs will be minimal*
+<div class="info-box notice">
+<strong>Note</strong>: there will be some costs associated with running through this tutorial on AWS but these costs will be minimal
+</div>
 
 **In this tutorial we will use a new VPC created by Docker and the AWS CLI.**
 
-## Prerequisites
+<h2 class="info-box exercise">Prerequisites</h2>
 
 * Access to an AWS account with permissions to use CloudFormation and to create the following objects (see [full set of required permissions](https://docs.docker.com/docker-for-aws/iam-permissions/)):
     * EC2 instances + Auto Scaling groups
@@ -33,9 +35,12 @@ You can use either the AWS Management Console (browser based) or use the AWS CLI
 * SSH key in the AWS region where you want to deploy (required to access the completed Docker install)
 * AWS account that supports EC2-VPC (See the [FAQ for details about EC2-Classic](https://docs.docker.com/docker-for-aws/faqs/))
 
-*It is recommended that you do not use your AWS root account and instead create a new IAM user.  You can either grant them [all these permissions](https://docs.docker.com/docker-for-aws/iam-permissions/) or make them an admin.  We will use a service role with CloudFormation that only has minimum required permissions.*
 
-## Install the AWS CLI and configure your AWS access keys
+<div class="info-box notice">
+It is recommended that you do not use your AWS root account and instead create a new IAM user.  You can either grant them <a href="https://docs.docker.com/docker-for-aws/iam-permissions/" target="_blank">all these permissions</a> or make them an admin.  We will use a service role with CloudFormation that only has minimum required permissions.
+</div>
+
+<h2 class="info-box exercise">Install the AWS CLI and configure your AWS access keys</h2>
 
 ### Installation
 
@@ -84,9 +89,11 @@ Default region name [None]: ap-southeast-2
 Default output format [None]: json
 ```
 
-## Exercise: Provision a Docker for AWS cluster
+<h2 class="info-box exercise">Exercise: Provision a Docker for AWS cluster</h2>
 
-**Note**: You must have created an EC2 ssh key pair in the desired region before creating the cluster. the keypair name must be called `DockerTutorial`.
+<div class="info-box information">
+<strong>Note</strong>: You must have created an EC2 ssh key pair in the desired region before creating the cluster. the keypair name must be called <code>DockerTutorial</code>.
+</div>
 
 Make a copy of the `aws_vars.sh.template` file and called it `aws_vars.sh`
 Set the required values environment variables:
@@ -124,13 +131,16 @@ After some time, check the status:
     ]
 }
 ```
+<div class="info-box information">
+When the stack is ready, the <code>StackStatus</code> will be <code>CREATE_COMPLETE</code>.
+If the stack creation fails, the <code>StackStatus</code> will be <code>ROLLBACK_COMPLETE</code>.
+</div>
 
-When the stack is ready, the `StackStatus` will be `CREATE_COMPLETE`.
-If the stack creation fails, the `StackStatus` will be `ROLLBACK_COMPLETE`.
+<div class="info-box notice">
+<strong>For the demo</strong>: Open AWS Console in a tab to show ELB, instances, etc.
+</div>
 
-**For demo**: Open AWS Console in a tab to show ELB, instances, etc.
-
-## Exercise: Setup the local environment to talk to a Swarm Manager
+<h2 class="info-box exercise">Exercise: Setup the local environment to talk to a Swarm Manager</h2>
 
 Find a Docker Swarm Manager instance public IP:
 
@@ -186,17 +196,17 @@ Labels:
 ...snip...
 ```
 
-The Labels can be used with placement constraints or [preferences](https://docs.docker.com/engine/swarm/services/#specify-service-placement-preferences-placement-pref) (e.g. to evenly distribute services across AZs, not just nodes), e.g.
-
-```sh
+<div class="info-box information">
+The Labels can be used with placement constraints or <a href="https://docs.docker.com/engine/swarm/services/#specify-service-placement-preferences-placement-pref" target="_blank">preferences</a> (e.g. to evenly distribute services across AZs, not just nodes), e.g.
+<br/>
+<pre class="sourceCode">
 docker service create \
   --replicas 9 \
   --name redis_2 \
   --placement-pref 'spread=node.labels.availability_zone' \
-  redis:3.0.6
-```
+  redis:3.0.6</pre></div>
 
-## Exercise: Verify your swarm nodes are up and running
+<h2 class="info-box exercise">Exercise: Verify your swarm nodes are up and running</h2>
 
 ```sh
 docker node ls
@@ -209,7 +219,7 @@ i75ybtjkpdfq2dm8v0lojj7mo     ip-172-31-38-221.ap-southeast-2.compute.internal  
 q3dmtefzvtd075rsfdgl8dxxp     ip-172-31-25-160.ap-southeast-2.compute.internal   Ready               Active
 ```
 
-## (Optional) Exercise: Running the app locally
+<h2 class="info-box exercise optional">(Optional) Exercise: Running the app locally</h2>
 
 If you have Docker setup on your local machine (e.g. for Mac or Docker for Windows) then you can test out the app locally using `docker-compose`:
 
@@ -230,8 +240,8 @@ votingapp_vote_1     gunicorn app:app -b 0.0.0. ...   Up      0.0.0.0:5000->80/t
 votingapp_worker_1   /bin/sh -c dotnet src/Work ...   Up
 ```
 
-Browse to `http://localhost:5000` for the Vote interface.
-Browse to `http://localhost:5001` for the Result interface.
+Browse to [`http://localhost:5000`](http://localhost:5000) for the Vote interface.
+Browse to [`http://localhost:5001`](http://localhost:5001) for the Result interface.
 
 Stop and remove the local application:
 
@@ -247,7 +257,7 @@ export DOCKER_HOST=localhost:2374
 docker node ls
 ```
 
-## Exercise: Deploy voting app to Docker for AWS
+<h2 class="info-box exercise">Exercise: Deploy voting app to Docker for AWS</h2>
 
 Use `docker stack deploy` with the Docker Compose V3 format YAML file to deploy the app onto the swarm:
 
@@ -309,11 +319,13 @@ Try accessing the exposed services:
 * Result : `http://<elb_dns_name>:5001`
 * Visualizer : `http://<elb_dns_name>:8080`
 
-**Note**: These are exposed as HTTP by default since the ELB is not terminating TLS.  It is acting as a Layer 4 LB and reverse proxy.  This feature is setup automatically as part of Docker for AWS.
+<div class="info-box information">
+<strong>Note</strong>: These are exposed as HTTP by default since the ELB is not terminating TLS.  It is acting as a Layer 4 LB and reverse proxy.  This feature is setup automatically as part of Docker for AWS.
+</div>
 
 Later we will expose services using TLS termination on the ELB.
 
-## Exercise: Check the Swarm Visualiser (via ELB DNS NAME)
+<h2 class="info-box exercise">Exercise: Check the Swarm Visualiser (via ELB DNS NAME)</h2>
 
 Browse to the Swarm Visualizer : `http://<elb_dns_name>:8080`
 
@@ -323,7 +335,7 @@ Undeploy the stack so we can use a custom reverse proxy as the entrypoint to the
 docker stack rm votingapp
 ```
 
-## Exercise: Deploy Traefik reverse proxy
+<h2 class="info-box exercise">Exercise: Deploy Traefik reverse proxy</h2>
 
 The Docker for AWS setup currently only creates an ELB (Layer 4) not an ALB (Layer 7).  This means we have to use a custom Layer 7 reverse proxy to route to our services in the swarm over a single port (443 or 80).
 
@@ -341,11 +353,13 @@ In your DNS registrar, point it to at least two of the DNS servers assigned by A
 
 Create a host wildcard record in your hosted zone (A record of type alias):
 
-Name: `*.mydomain.com`
-Type: `A - IPv4 address`
-Alias: `Yes`
-Alias Target: `<Select your ELB DNS NAme from the list>`
-ß
+```
+        Name: *.mydomain.com
+        Type: A - IPv4 address
+       Alias: Yes
+Alias Target: <Select your ELB DNS NAme from the list>
+```
+
 Leave the remaining fields as is.
 Create the record.
 
@@ -353,7 +367,7 @@ Go to Amazon Certificate Manager and create a free wildcard certificate for your
 
 Approve the certificate request in your email.
 
-Record the ARN for the ACM certificate, e.g: `arn:aws:acm:ap-southeast-2:XXXXXXXXXXXX:certificate/e807ff24-1988-428e-a326-8e`d928d535b6
+Record the ARN for the ACM certificate, e.g: `arn:aws:acm:ap-southeast-2:XXXXXXXXXXXX:certificate/e807ff24-1988-428e-a326-8ed928d535b6`
 
 This will be needed for Traefik later.
 
@@ -419,7 +433,7 @@ There will be no TLS termination on the ELB using this method (Traefik does supp
 *TODO*
 
 
-## Exercise: Deploy the Swarm Visualizer (using Traefik reverse proxy)
+<h2 class="info-box exercise">Exercise: Deploy the Swarm Visualizer (using Traefik reverse proxy)</h2>
 
 ```sh
 ./deploy_stack.sh voting-app/docker-stack-visualizer.yml prod.env
@@ -427,14 +441,14 @@ There will be no TLS termination on the ELB using this method (Traefik does supp
 
 Browse to: https://vizualizer.dockertutorial.technology
 
-## Exercise: Get audience to vote via the custom domain
+<h2 class="info-box exercise">Exercise: Get audience to vote via the custom domain</h2>
 
 Which the most popular pet?  Cats or Dogs?
 
 Browse to: https://vote.dockertutorial.technology on your mobiles.
 Check results at: https://result.dockertutorial.technology
 
-## Exercise: Deploy Portainer
+<h2 class="info-box exercise">Exercise: Deploy Portainer</h2>
 
 ```sh
 ./deploy_stack.sh voting-app/docker-stack-portainer.yml prod.env
@@ -450,7 +464,7 @@ In Portainer, check the logs (e.g. traefik) and console (e.g. db) for a running 
 
 **Note:** Exposing Portainer is a security risk - do not expose it publicly!
 
-## Exercise: Deploy Logging
+<h2 class="info-box exercise">Exercise: Deploy Logging</h2>
 
 Containers can use one of [several drivers](https://docs.docker.com/engine/admin/logging/overview/) to ship logs.
 
@@ -504,7 +518,7 @@ Auto-refresh every 10 secs.
 
 Try voting a few times then check the logs (try query: Processing vote for '?')
 
-## (Optional) Exercise: Create a visualisation in Kibana - tally of all votes
+<h2 class="info-box exercise optional">(Optional) Exercise: Create a visualisation in Kibana - tally of all votes</h2>
 
 Click 'Vizualise'
 Click 'Create Visualization'
@@ -533,7 +547,7 @@ Try voting some more and check the dashboard.
 
 Any data that is logged can be searched and made into a dashboard for key performance or business metrics.
 
-## (Optional) Exercise: Volumes - Handling application state in the cluster
+<h2 class="info-box exercise optional">(Optional) Exercise: Volumes - Handling application state in the cluster</h2>
 
 In a cluster, application state should not be kept inside containers.  However, if we use host volumes, then the data is not portable -- we need to use constraints on services to limit where they can run which is not very practical.
 
@@ -634,14 +648,14 @@ docker service scale votingapp_db=0
 docker service scale votingapp_db=1
 ```
 
-## Exercise: Scaling up / down services
+<h2 class="info-box exercise">Exercise: Scaling up / down services</h2>
 
 Scale up some of the services and check Kibana logs:
 
 docker service scale votingapp_worker=3
 docker service scale votingapp_vote=3
 
-## Drain node
+<h2 class="info-box exercise">Exercise: Drain node</h2>
 
 Pick a node (not master) and not the one with the `db` on it.
 
@@ -663,7 +677,7 @@ Let's set it back to `active`:
 docker node update --availability=active a3o4uvlpdtrbcpxwu9hou4fsf
 ```
 
-## Exercise: Swarm Service Rolling updates
+<h2 class="info-box exercise">Exercise: Swarm Service Rolling updates</h2>
 
 When deploying updates to services (e.g. new image or config/secrets/env vars), swarm uses a rolling update strategy to achieve zero-downtime deployment (you can combine this with built-in [healthchecks](https://docs.docker.com/compose/compose-file/#healthcheck)).
 
@@ -704,7 +718,7 @@ Deploy the `votingapp` stack again to perform a rolling update:
 
 And watch the Visualizer: https://visualizer.dockertutorial.technology/
 
-## Exercise: Deploy Monitoring
+<h2 class="info-box exercise">Exercise: Deploy Monitoring</h2>
 
 For this demo we'll deploy a monitoring stack consisting off: cAdvisor (host/container meterics) + Prometheus (server + alarm manager) + Grafana (dashboard)
 
@@ -743,7 +757,7 @@ Import the JSON dashboard: `docker-prometheus-swarm/dashboards/docker-swarm-cont
 
 Inspect some of the metrics available.
 
-## Exercise: Teardown
+<h2 class="info-box exercise">Exercise: Teardown</h2>
 
 ```sh
 docker stack rm logging monitoring portainer traefik votingapp visualizer
@@ -754,7 +768,7 @@ docker image prune # If you want to remove all unused images and reclaim space
 docker config rm prometheus.yml alert.rules_services
 ```
 
-## Delete the CloudFormation stack
+<h2 class="info-box exercise">Delete the CloudFormation stack</h2>
 
 Clean up all AWS resources.
 
@@ -762,7 +776,7 @@ Clean up all AWS resources.
 ./delete_stack.sh
 ```
 
-## Credits
+<h2 class="info-box exercise">Credits</h2>
 
 The voting app was copied from Docker Samples:
 * https://github.com/dockersamples/example-voting-app
