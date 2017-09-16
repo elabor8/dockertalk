@@ -39,10 +39,10 @@ services:
       # - logging
     depends_on:
       - redis
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
+    # logging:
+    #   driver: fluentd
+    #   options:
+    #     fluentd-address: 127.0.0.1:24224
     deploy:
       replicas: 1
       update_config:
@@ -60,7 +60,7 @@ services:
     networks:
       - traefik
       - backend
-      - logging
+      # - logging
     depends_on:
       - db
     # Demo: uncomment this when logging is added
