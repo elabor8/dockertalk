@@ -16,6 +16,8 @@ There are two ways to deploy Docker for AWS:
 
 You can use either the AWS Management Console (browser based) or use the AWS CLI (command-line based).
 
+*Note: there will be some costs associated with running through this tutorial on AWS but these costs will be minimal*
+
 **In this tutorial we will use a new VPC created by Docker and the AWS CLI.**
 
 ## Prerequisites
@@ -82,7 +84,7 @@ Default region name [None]: ap-southeast-2
 Default output format [None]: json
 ```
 
-## Provision a Docker for AWS cluster
+## Exercise: Provision a Docker for AWS cluster
 
 **Note**: You must have created an EC2 ssh key pair in the desired region before creating the cluster. the keypair name must be called `DockerTutorial`.
 
@@ -128,7 +130,7 @@ If the stack creation fails, the `StackStatus` will be `ROLLBACK_COMPLETE`.
 
 **For demo**: Open AWS Console in a tab to show ELB, instances, etc.
 
-## Setup the local environment to talk to a Swarm Manager
+## Exercise: Setup the local environment to talk to a Swarm Manager
 
 Find a Docker Swarm Manager instance public IP:
 
@@ -194,7 +196,7 @@ docker service create \
   redis:3.0.6
 ```
 
-## Verify your swarm nodes are up and running
+## Exercise: Verify your swarm nodes are up and running
 
 ```sh
 docker node ls
@@ -207,7 +209,7 @@ i75ybtjkpdfq2dm8v0lojj7mo     ip-172-31-38-221.ap-southeast-2.compute.internal  
 q3dmtefzvtd075rsfdgl8dxxp     ip-172-31-25-160.ap-southeast-2.compute.internal   Ready               Active
 ```
 
-## (Optional) Running the app locally
+## (Optional) Exercise: Running the app locally
 
 If you have Docker setup on your local machine (e.g. for Mac or Docker for Windows) then you can test out the app locally using `docker-compose`:
 
@@ -245,7 +247,7 @@ export DOCKER_HOST=localhost:2374
 docker node ls
 ```
 
-## Deploy voting app to Docker for AWS
+## Exercise: Deploy voting app to Docker for AWS
 
 Use `docker stack deploy` with the Docker Compose V3 format YAML file to deploy the app onto the swarm:
 
@@ -311,7 +313,7 @@ Try accessing the exposed services:
 
 Later we will expose services using TLS termination on the ELB.
 
-## Check the Swarm Visualiser
+## Exercise: Check the Swarm Visualiser (via ELB DNS NAME)
 
 Browse to the Swarm Visualizer : `http://<elb_dns_name>:8080`
 
@@ -321,7 +323,7 @@ Undeploy the stack so we can use a custom reverse proxy as the entrypoint to the
 docker stack rm votingapp
 ```
 
-## Deploy Traefik reverse proxy
+## Exercise: Deploy Traefik reverse proxy
 
 The Docker for AWS setup currently only creates an ELB (Layer 4) not an ALB (Layer 7).  This means we have to use a custom Layer 7 reverse proxy to route to our services in the swarm over a single port (443 or 80).
 
@@ -410,17 +412,14 @@ traefik:
       - "com.docker.aws.lb.arn=${ACM_CERT_ARN}"
 ```
 
-### Get everyone to vote via the custom domain
-
-Which the most popular pet?  Cats or Dogs?
-
 ### Alternative: no custom domain - using path routing
 
 There will be no TLS termination on the ELB using this method (Traefik does supports TLS itself but that is beyond the scope of this tutorial).
 
-TODO
+*TODO*
 
-## Deploy the Swarm Visualizer
+
+## Exercise: Deploy the Swarm Visualizer (using Traefik reverse proxy)
 
 ```sh
 ./deploy_stack.sh voting-app/docker-stack-visualizer.yml prod.env
@@ -428,7 +427,14 @@ TODO
 
 Browse to: https://vizualizer.dockertutorial.technology
 
-## Deploy Portainer
+## Exercise: Get audience to vote via the custom domain
+
+Which the most popular pet?  Cats or Dogs?
+
+Browse to: https://vote.dockertutorial.technology on your mobiles.
+Check results at: https://result.dockertutorial.technology
+
+## Exercise: Deploy Portainer
 
 ```sh
 ./deploy_stack.sh voting-app/docker-stack-portainer.yml prod.env
@@ -448,7 +454,7 @@ Check the health page as well: http://traefik.dockertutorial.technology:8000/das
 
 **Note:** Exposing Portainer is a security risk - do not expose it publicly!
 
-## Deploy Logging
+## Exercise: Deploy Logging
 
 Containers can use one of [several drivers](https://docs.docker.com/engine/admin/logging/overview/) to ship logs.
 
@@ -502,7 +508,7 @@ Auto-refresh every 10 secs.
 
 Try voting a few times then check the logs (try query: Processing vote for '?')
 
-## Scaling up / down
+## Exercise: Scaling up / down services
 
 Scale up the `worker` service and check Kibana logs:
 
@@ -512,17 +518,17 @@ Try query: worker
 
 Check Portainer and Vizualiser.
 
-## Volumes: Handling application state
+## Exercise: Volumes - Handling application state in the cluster
 
-No volumes: Drain node, state is lost
+### No volumes: Drain node, state is lost
 
-## With Volumes (Cloudstor) - drain node, move to another node (state is retained)
+### With Volumes (Cloudstor) - drain node, move to another node (state is retained)
 
-## Swarm Service Rolling updates
+## Exercise: Swarm Service Rolling updates
 
 (V1 -> V2) – Zero downtime
 
-## (Optional) Create a visualisation in Kibana - tally of all votes
+## (Optional) Exercise: Create a visualisation in Kibana - tally of all votes
 
 Click 'Vizualise'
 Click 'Create Visualization'
@@ -551,7 +557,7 @@ Try voting some more and check the dashboard.
 
 Any data that is logged can be searched and made into a dashboard for key performance or business metrics.
 
-## Deploy Monitoring
+## Exercise: Deploy Monitoring
 
 For this demo we'll deploy a monitoring stack consisting off: cAdvisor (host/container meterics) + Prometheus (server + alarm manager) + Grafana (dashboard)
 
@@ -573,7 +579,7 @@ docker config create alert.rules_services docker-prometheus-swarm/rootfs/etc/pro
 docker config ls
 ```
 
-### Monitoring stack
+### Deploy the monitoring stack
 
 ./deploy_stack.sh voting-app/docker-stack-monitoring.yml prod.env
 
@@ -588,7 +594,7 @@ Import the JSON dashboard: `docker-prometheus-swarm/dashboards/docker-swarm-cont
 
 Inspect some of the metrics available.
 
-## Teardown
+## Exercise: Teardown
 
 docker stack rm logging monitoring portainer traefik votingapp visualizer
 docker network prune
