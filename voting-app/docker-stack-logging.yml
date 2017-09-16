@@ -2,6 +2,7 @@
 version: '3.3'
 services:
 
+  # Log collector, buffer, filter and shipper
   fluentd:
     image: dockertutorial/fluentd-elasticsearch
     networks:
@@ -16,6 +17,7 @@ services:
       restart_policy:
         condition: on-failure
 
+  # Log index and search
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
     environment:
@@ -24,10 +26,8 @@ services:
       xpack.monitoring.enabled: 'false'
       xpack.graph.enabled: 'false'
       xpack.watcher.enabled: 'false'
-    # volumes:
-    #   - esdata1:/usr/share/elasticsearch/data
     volumes:
-      - esdata_shared:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
     networks:
       - logging
     logging:
@@ -36,30 +36,39 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-      # placement:
-      #   constraints: [node.role == manager]
+      # Remove this restriction to see that state is lost with a host-only volume.
+      placement:
+        constraints: [node.role == manager]
       resources:
         limits:
           memory: 1g
 
+  # Log search UI via elasticsearch
   kibana:
     image: docker.elastic.co/kibana/kibana:5.5.2
-    ports:
-      - "5601:5601"
     networks:
       - logging
+      - traefik
     logging:
       driver: json-file
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
+      labels:
+        - "traefik.port=5601"
+        - "traefik.docker.network=traefik"
+        - "traefik.frontend.rule=Host:kibana.${DOMAIN_NAME}"
 
 networks:
+  # Log aggregation network
   logging:
+    external: true
+  # Traefik reverse proxy network
+  traefik:
     external: true
 
 volumes:
-  # esdata1:
-  esdata_shared:
-    external: true
+  esdata:
+    # After creating an external volume with Cloudstor, set external: true
+    # external: true

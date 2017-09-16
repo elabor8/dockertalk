@@ -254,9 +254,9 @@ You can now access each service which have published ports at:
 
 Try accessing the exposed services:
 
-* Vote : http://<elb_dns_name>:5000
-* Result : http://<elb_dns_name>:5001
-* Visualizer : http://<elb_dns_name>:8080
+* Vote : `http://<elb_dns_name>:5000`
+* Result : `http://<elb_dns_name>:5001`
+* Visualizer : `http://<elb_dns_name>:8080`
 
 **Note**: These are exposed as HTTP by default since the ELB is not terminating TLS.  It is acting as a Layer 4 LB and reverse proxy.  This feature is setup automatically as part of Docker for AWS.
 
@@ -264,7 +264,7 @@ Later we will expose services using TLS termination on the ELB.
 
 ## Check the Swarm Visualiser
 
-Browse to the Swarm Visualizer : http://<elb_dns_name>:8080
+Browse to the Swarm Visualizer : `http://<elb_dns_name>:8080`
 
 Undeploy the stack so we can use a custom reverse proxy as the entrypoint to the swarm:
 
@@ -361,6 +361,10 @@ traefik:
       - "com.docker.aws.lb.arn=${ACM_CERT_ARN}"
 ```
 
+### Get everyone to vote via the custom domain
+
+Which the most popular pet?  Cats or Dogs?
+
 ### Alternative: no custom domain - using path routing
 
 There will be no TLS termination on the ELB using this method (Traefik does supports TLS itself but that is beyond the scope of this tutorial).
@@ -387,21 +391,112 @@ Browse to: https://portainer.dockertutorial.technology
 
 Scale up the vote service to 2 containers then try voting and see that different containers process the vote.
 
+In Portainer, check the logs (e.g. traefik) and console (e.g. db) for a running container.
+
 Check the Traefik dashboard now: http://traefik.dockertutorial.technology:8000
 
 Check the health page as well: http://traefik.dockertutorial.technology:8000/dashboard/#/health
 
+**Note:** Exposing Portainer is a security risk - do not expose it publicly!
+
 ## Deploy Logging
 
-## Deploy Monitoring
+Containers can use one of [several drivers](https://docs.docker.com/engine/admin/logging/overview/) to ship logs.
 
-## Get everyone to vote via the custom domain
+`docker logs` / `docker-compose logs` / `docker service logs` only work with the default `json-file` logging driver.
+
+The containers in the Docker for AWS cluster are already configured to send all their logs to AWS CloudWatch Logs.  This is not the easily interface to use in the AWS Console.  You can ship elsewhere from here.  For the demo, we'll use EFK stack to ship to a private Elasticsearch server.
+
+**Note**: In production, you’ll need to consider HA, scaling, data backup and retention, security, disaster recovery, etc.
+
+**Note:** Fluentd is exposed publicly due to limitations of the Docker for AWS setup.  You can create additional security groups or setup NACLs to block access.  In Docker EE you can configure UCP logging to ship logs to Elasticsearch.
+
+Create the logging network:
+
+```sh
+docker network create -d overlay logging
+```
+
+Deploy the logging stack:
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-logging.yml prod.env
+```
+
+Check that the logging stack and services are up and running:
+
+```sh
+docker stack ls
+docker service ls --filter name=logging
+```
+
+Check the Kibana dashboard:
+
+Browse to: https://kibana.dockertutorial.technology
+
+No logs?
+
+Update the `votingapp` stack to connect to the `logging` network and add the fluentd logging options, then re-deploy.
+
+```sh
+./deploy_stack.sh voting-app/docker-stack-votingapp.yml prod.env
+```
+
+Only services that have changed will be restarted.
+
+In Kibana, click "refresh fields" to configure the index pattern then click Create.
+
+Go to the 'Discover' view - logs should now appear.
+
+Select the container_name, log, and message fields.
+Auto-refresh every 10 secs.
+
+Try voting a few times then check the logs (try query: Processing vote for '?')
+
+### (Optional) Create a visualisation - tally of all votes
+
+Click 'Vizualise'
+Click 'Create Visualization'
+Select 'Metric' as the visualization type
+Select the `logstash-*` index
+Select `count` for Metric
+Select 'Filters' under Split group / Aggregation
+Filter 1: "Processing vote for 'a'"
+Label 1: Cats
+Click Add Filter
+Filter 2: "Processing vote for 'b'"
+Label 2: Dogs
+Click Save
+Enter "Vote Tally"
+
+Note: Make sure no filter is added to the query at the top.
+
+Click 'Dashboard'
+Click 'Create a dashboard'
+Click 'Add'
+Select 'Vote Tally'
+Click Save
+Maximise the dashboard
+
+Try voting some more and check the dashboard.
+
+Any data that is logged can be searched and made into a dashboard for key performance or business metrics.
+
+## Scaling up / down
+
+Scale up the `worker` service and check Kibana logs:
+
+docker service scale votingapp_worker=3
+
+Try query: worker
+
+Check Portainer and Vizualiser.
+
+## Deploy Monitoring
 
 ## No volumes: Drain node, state is lost
 
 ## With Volumes (Cloudstor) - drain node, move to another node (state is retained)
-
-## Scaling up / down
 
 ## Rolling updates (V1 -> V2) – Zero downtime
 
