@@ -345,7 +345,9 @@ We will use a Traefik service with a published port on port 443 to handle intern
 
 We will use a custom domain name and ACM wildcard certificate to get TLS termination working on the ELB and then use Traefik to route to services internally in the swarm via a host header.
 
-Prerequisite: A custom domain name (e.g. `mydomain.com`)
+#### Prerequisites
+
+You will need to have registered a custom domain name (e.g. `mydomain.com`)
 
 In Route 53, create a Hosted Zone for your domain.
 
@@ -377,6 +379,8 @@ Copy the file `prod.env.template` to `prod.env` and update the environment varia
 DOMAIN_NAME=<your_domain>
 ACM_CERT_ARN=<your_acm_cert_arn>
 ```
+
+#### Start exercise
 
 Create the overlay network for Traefik and other services to communicate within the swarm:
 
@@ -472,9 +476,13 @@ Containers can use one of [several drivers](https://docs.docker.com/engine/admin
 
 The containers in the Docker for AWS cluster are already configured to send all their logs to AWS CloudWatch Logs.  This is not the easily interface to use in the AWS Console.  You can ship elsewhere from here.  For the demo, we'll use EFK stack to ship to a private Elasticsearch server.
 
-**Note**: In production, you’ll need to consider HA, scaling, data backup and retention, security, disaster recovery, etc.
+<div class="info-box information">
+<strong>Note</strong>: In production, you’ll need to consider HA, scaling, data backup and retention, security, disaster recovery, etc.
+<br/><br/>
+<strong>Note</strong>: Fluentd is exposed publicly due to limitations of the Docker for AWS setup.  You can create additional security groups or setup NACLs to block access.  In Docker EE you can configure UCP logging to ship logs to Elasticsearch.
+</div>
 
-**Note:** Fluentd is exposed publicly due to limitations of the Docker for AWS setup.  You can create additional security groups or setup NACLs to block access.  In Docker EE you can configure UCP logging to ship logs to Elasticsearch.
+#### Start exercise
 
 Create the logging network:
 
@@ -509,41 +517,47 @@ Update the `votingapp` stack to connect to the `logging` network and add the flu
 
 Only services that have changed will be restarted.
 
-In Kibana, click "refresh fields" to configure the index pattern then click Create.
+In Kibana, click <strong>refresh fields</strong> to configure the index pattern then click Create.
 
-Go to the 'Discover' view - logs should now appear.
+Go to the <strong>Discover</strong> view - logs should now appear.
 
 Select the container_name, log, and message fields.
 Auto-refresh every 10 secs.
 
-Try voting a few times then check the logs (try query: Processing vote for '?')
+Try voting a few times then check the logs (try query: `Processing vote for '?'`)
 
-<h2 class="info-box exercise optional">(Optional) Exercise: Create a visualisation in Kibana - tally of all votes</h2>
+<h2 class="info-box exercise optional">(Optional) Exercise: Create a visualisation in Kibana</h2>
 
-Click 'Vizualise'
-Click 'Create Visualization'
-Select 'Metric' as the visualization type
-Select the `logstash-*` index
-Select `count` for Metric
-Select 'Filters' under Split group / Aggregation
-Filter 1: "Processing vote for 'a'"
-Label 1: Cats
-Click Add Filter
-Filter 2: "Processing vote for 'b'"
-Label 2: Dogs
-Click Save
-Enter "Vote Tally"
+Create a visualisation for a tally of all votes for Cats and Dogs:
 
-Note: Make sure no filter is added to the query at the top.
+* Click **Visualize**
+* Click **Create Visualization**
+* Select `Metric` as the visualization type
+* Select the `logstash-*` index
+* Select `count` for Metric
+* Select `Filters` under Split group / Aggregation
+* Filter 1: "Processing vote for 'a'"
+* Label 1: Cats
+* Click **Add Filter**
+* Filter 2: "Processing vote for 'b'"
+* Label 2: Dogs
+* Click **Save**
+* Enter "Vote Tally"
 
-Click 'Dashboard'
-Click 'Create a dashboard'
-Click 'Add'
-Select 'Vote Tally'
-Click Save
-Maximise the dashboard
+<div class="info-box notice">
+<strong>Note</strong>: Make sure no filter is added to the query at the top.
+</div>
 
-Try voting some more and check the dashboard.
+Create a dashboard which includes the "Vote Tally" visualisation:
+
+* Click **Dashboard**
+* Click **Create a dashboard**
+* Click **Add**
+* Select 'Vote Tally'
+* Click **Save**
+* Maximise the dashboard
+
+Try voting a few times then check the dashboard.
 
 Any data that is logged can be searched and made into a dashboard for key performance or business metrics.
 
@@ -602,7 +616,7 @@ cloudstor:aws       db-votes
 ...snip...
 ```
 
-This will use EFS (for DBs with a lot of writes, you should use EBS but moving EBS volumes between hosts is a slower process so for the dmeo we use EFS).
+This will use EFS (for DBs with a lot of writes, you should use EBS but moving EBS volumes between hosts is a slower process so for the demo we use EFS).
 
 Update the voting app stack to use the external `db-votes` volume:
 
@@ -652,8 +666,10 @@ docker service scale votingapp_db=1
 
 Scale up some of the services and check Kibana logs:
 
+```sh
 docker service scale votingapp_worker=3
 docker service scale votingapp_vote=3
+```
 
 <h2 class="info-box exercise">Exercise: Drain node</h2>
 
@@ -744,7 +760,9 @@ docker config ls
 
 ### Deploy the monitoring stack
 
+```sh
 ./deploy_stack.sh voting-app/docker-stack-monitoring.yml prod.env
+```
 
 Check the monitoring services:
 
