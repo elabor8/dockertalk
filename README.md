@@ -243,10 +243,35 @@ votingapp_worker_1   /bin/sh -c dotnet src/Work ...   Up
 Browse to [`http://localhost:5000`](http://localhost:5000) for the Vote interface.
 Browse to [`http://localhost:5001`](http://localhost:5001) for the Result interface.
 
+Check the Swarm Visualiser - nothing?  Why?
+
 Stop and remove the local application:
 
 ```sh
 docker-compose down
+```
+
+Deploy the same Docker Compose project as a "stack" to the local host:
+
+```sh
+# Confirm the local instance is a single swarm node:
+docker node ls
+# If not a swarm, use `swarm init` first.
+```
+
+Deploy the stack:
+
+```sh
+docker stack deploy votingapp -c ./docker-stack.yml
+docker stack ls
+```
+
+Now, check the Swarm Visualiser.
+
+Remove the local stack:
+
+```sh
+docker stack rm votingapp
 ```
 
 Reset the local env to point back to the Docker for AWS manager:

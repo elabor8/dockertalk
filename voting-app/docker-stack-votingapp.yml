@@ -25,7 +25,7 @@ services:
     networks:
       - backend
       # Demo: uncomment this when logging is added
-      - logging
+      # - logging
     deploy:
       placement:
         # Demo: Constraint for DB placement

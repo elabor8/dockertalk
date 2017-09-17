@@ -76,8 +76,6 @@ services:
         delay: 10s
         max_attempts: 3
         window: 120s
-      placement:
-        constraints: [node.role == manager]
 
   # Swarm visualizer UI to show placement of containers in the swarm
   visualizer:
