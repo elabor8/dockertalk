@@ -25,11 +25,11 @@ services:
     networks:
       - backend
       # Demo: uncomment this when logging is added
-      # - logging
+      - logging
     deploy:
       placement:
         # Demo: Constraint for DB placement
-        constraints: [node.role != manager]
+        constraints: [node.role == manager]
 
   vote:
     image: dockersamples/examplevotingapp_vote:before

@@ -443,7 +443,7 @@ There will be no TLS termination on the ELB using this method (Traefik does supp
 ./deploy_stack.sh voting-app/docker-stack-visualizer.yml prod.env
 ```
 
-Browse to: https://vizualizer.dockertutorial.technology
+Browse to: https://visualizer.dockertutorial.technology
 
 <h2 class="info-box exercise">Exercise: Get audience to vote via the custom domain</h2>
 
@@ -670,6 +670,10 @@ Scale up some of the services and check Kibana logs:
 docker service scale votingapp_worker=3
 docker service scale votingapp_vote=3
 ```
+
+Reload the vote page: https://vote.dockertutorial.technology/
+
+Try voting a few times - notice that a different container processes the vote each time (this is load-balancing provided by swarm mode).
 
 <h2 class="info-box exercise">Exercise: Drain node</h2>
 

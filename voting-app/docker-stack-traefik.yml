@@ -5,7 +5,7 @@ services:
     image: traefik
     ports:
       - "443:80"
-      - "8000:8080" # For demo purposes: Don't normally publish this publicly.
+      - "8000:8080" # Dashboard, for demo purposes: Don't normally publish this publicly.
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
