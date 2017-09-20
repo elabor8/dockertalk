@@ -3,7 +3,7 @@ Using Docker in production: Get started today!
 
 <h2 class="info-box exercise">Demo script</h2>
 
-*Version: Docker CE for AWS (v17.06)*
+*Tested with Docker Version: Docker CE for AWS (v17.06)*
 
 *A talk by Clarence Bakirtzidis - Email: [clarence.bakirtzidis@elabor8.com.au](mailto:clarence.bakirtzidis@elabor8.com.au), Twitter: [@clarenceb_oz](https://twitter.com/clarenceb_oz)*
 
@@ -455,12 +455,23 @@ traefik:
       - "com.docker.aws.lb.arn=${ACM_CERT_ARN}"
 ```
 
-### Alternative: no custom domain - using path routing
+### Alternative: no custom domain or TLS certificate
 
 There will be no TLS termination on the ELB using this method (Traefik does supports TLS itself but that is beyond the scope of this tutorial).
 
-*TODO*
+Your options here are:
 
+1. Don't use Traefik at all - just add published ports to the services you want to expose via the ELB and use the ELB DNS Name to access them
+2. Use Traefik with [Path Routing](https://docs.traefik.io/basics/) instead of Host Header routing, e.g. `traefik.frontend.rule=Path:/vote`
+
+Through this tutorial, when you see a URL like: `https://vote.dockertutorial.technology`, change it to `http(s)://<ELB_DNS_Name>(:port|/path)` depending on your configuration choice above.
+
+Copy the file `prod.env.template` to `prod.env` and update the environment variables with empty values (since they won't be required):
+
+```sh
+DOMAIN_NAME=
+ACM_CERT_ARN=
+```
 
 <h2 class="info-box exercise">Exercise: Deploy the Swarm Visualizer (using Traefik reverse proxy)</h2>
 

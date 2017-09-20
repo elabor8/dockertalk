@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Docker Talk</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link href="data:text/css;charset=utf-8,%0A%2Emarkdown%2Dbody%20%7B%0Amargin%3A%200%20auto%3B%0Apadding%3A%2030px%3B%0A%7D%0A%2Emarkdown%2Dbody%20%7B%0A%2Dwebkit%2Dtext%2Dsize%2Dadjust%3A%20100%25%3B%0Atext%2Dsize%2Dadjust%3A%20100%25%3B%0Acolor%3A%20%23333%3B%0Afont%2Dfamily%3A%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20%22Segoe%20UI%22%2C%20Arial%2C%20freesans%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2016px%3B%0Aline%2Dheight%3A%201%2E6%3B%0Aword%2Dwrap%3A%20break%2Dword%3B%0A%7D%0A%2Emarkdown%2Dbody%20a%20%7B%0Abackground%2Dcolor%3A%20transparent%3B%0A%7D%0A%2Emarkdown%2Dbody%20a%3Aactive%2C%0A%2Emarkdown%2Dbody%20a%3Ahover%20%7B%0Aoutline%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20strong%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%20%7B%0Afont%2Dsize%3A%202em%3B%0Amargin%3A%200%2E67em%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20img%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20hr%20%7B%0Abox%2Dsizing%3A%20content%2Dbox%3B%0Aheight%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20pre%20%7B%0Aoverflow%3A%20auto%3B%0A%7D%0A%2Emarkdown%2Dbody%20code%2C%0A%2Emarkdown%2Dbody%20kbd%2C%0A%2Emarkdown%2Dbody%20pre%20%7B%0Afont%2Dfamily%3A%20monospace%2C%20monospace%3B%0Afont%2Dsize%3A%201em%3B%0A%7D%0A%2Emarkdown%2Dbody%20input%20%7B%0Acolor%3A%20inherit%3B%0Afont%3A%20inherit%3B%0Amargin%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20html%20input%5Bdisabled%5D%20%7B%0Acursor%3A%20default%3B%0A%7D%0A%2Emarkdown%2Dbody%20input%20%7B%0Aline%2Dheight%3A%20normal%3B%0A%7D%0A%2Emarkdown%2Dbody%20input%5Btype%3D%22checkbox%22%5D%20%7B%0Abox%2Dsizing%3A%20border%2Dbox%3B%0Apadding%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20table%20%7B%0Aborder%2Dcollapse%3A%20collapse%3B%0Aborder%2Dspacing%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20td%2C%0A%2Emarkdown%2Dbody%20th%20%7B%0Apadding%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2A%20%7B%0Abox%2Dsizing%3A%20border%2Dbox%3B%0A%7D%0A%2Emarkdown%2Dbody%20input%20%7B%0Afont%3A%2013px%2F1%2E4%20Helvetica%2C%20arial%2C%20nimbussansl%2C%20liberationsans%2C%20freesans%2C%20clean%2C%20sans%2Dserif%2C%20%22Segoe%20UI%20Emoji%22%2C%20%22Segoe%20UI%20Symbol%22%3B%0A%7D%0A%2Emarkdown%2Dbody%20a%20%7B%0Acolor%3A%20%234078c0%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20a%3Ahover%2C%0A%2Emarkdown%2Dbody%20a%3Aactive%20%7B%0Atext%2Ddecoration%3A%20underline%3B%0A%7D%0A%2Emarkdown%2Dbody%20hr%20%7B%0Aheight%3A%200%3B%0Amargin%3A%2015px%200%3B%0Aoverflow%3A%20hidden%3B%0Abackground%3A%20transparent%3B%0Aborder%3A%200%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23ddd%3B%0A%7D%0A%2Emarkdown%2Dbody%20hr%3Abefore%20%7B%0Adisplay%3A%20table%3B%0Acontent%3A%20%22%22%3B%0A%7D%0A%2Emarkdown%2Dbody%20hr%3Aafter%20%7B%0Adisplay%3A%20table%3B%0Aclear%3A%20both%3B%0Acontent%3A%20%22%22%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%2C%0A%2Emarkdown%2Dbody%20h2%2C%0A%2Emarkdown%2Dbody%20h3%2C%0A%2Emarkdown%2Dbody%20h4%2C%0A%2Emarkdown%2Dbody%20h5%2C%0A%2Emarkdown%2Dbody%20h6%20%7B%0Amargin%2Dtop%3A%2015px%3B%0Amargin%2Dbottom%3A%2015px%3B%0Aline%2Dheight%3A%201%2E1%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%20%7B%0Afont%2Dsize%3A%2030px%3B%0A%7D%0A%2Emarkdown%2Dbody%20h2%20%7B%0Afont%2Dsize%3A%2021px%3B%0A%7D%0A%2Emarkdown%2Dbody%20h3%20%7B%0Afont%2Dsize%3A%2016px%3B%0A%7D%0A%2Emarkdown%2Dbody%20h4%20%7B%0Afont%2Dsize%3A%2014px%3B%0A%7D%0A%2Emarkdown%2Dbody%20h5%20%7B%0Afont%2Dsize%3A%2012px%3B%0A%7D%0A%2Emarkdown%2Dbody%20h6%20%7B%0Afont%2Dsize%3A%2011px%3B%0A%7D%0A%2Emarkdown%2Dbody%20blockquote%20%7B%0Amargin%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20ul%2C%0A%2Emarkdown%2Dbody%20ol%20%7B%0Apadding%3A%200%3B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20ol%20ol%2C%0A%2Emarkdown%2Dbody%20ul%20ol%20%7B%0Alist%2Dstyle%2Dtype%3A%20lower%2Droman%3B%0A%7D%0A%2Emarkdown%2Dbody%20ul%20ul%20ol%2C%0A%2Emarkdown%2Dbody%20ul%20ol%20ol%2C%0A%2Emarkdown%2Dbody%20ol%20ul%20ol%2C%0A%2Emarkdown%2Dbody%20ol%20ol%20ol%20%7B%0Alist%2Dstyle%2Dtype%3A%20lower%2Dalpha%3B%0A%7D%0A%2Emarkdown%2Dbody%20dd%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20code%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20%22Liberation%20Mono%22%2C%20Menlo%2C%20Courier%2C%20monospace%3B%0Afont%2Dsize%3A%2012px%3B%0A%7D%0A%2Emarkdown%2Dbody%20pre%20%7B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%200%3B%0Afont%3A%2012px%20Consolas%2C%20%22Liberation%20Mono%22%2C%20Menlo%2C%20Courier%2C%20monospace%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Eselect%3A%3A%2Dms%2Dexpand%20%7B%0Aopacity%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Eocticon%20%7B%0Afont%3A%20normal%20normal%20normal%2016px%2F1%20octicons%2Danchor%3B%0Adisplay%3A%20inline%2Dblock%3B%0Atext%2Ddecoration%3A%20none%3B%0Atext%2Drendering%3A%20auto%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20antialiased%3B%0A%2Dmoz%2Dosx%2Dfont%2Dsmoothing%3A%20grayscale%3B%0A%2Dwebkit%2Duser%2Dselect%3A%20none%3B%0A%2Dmoz%2Duser%2Dselect%3A%20none%3B%0A%2Dms%2Duser%2Dselect%3A%20none%3B%0Auser%2Dselect%3A%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Eocticon%2Dlink%3Abefore%20%7B%0Acontent%3A%20%27%5Cf05c%27%3B%0A%7D%0A%2Emarkdown%2Dbody%3E%2A%3Afirst%2Dchild%20%7B%0Amargin%2Dtop%3A%200%20%21important%3B%0A%7D%0A%2Emarkdown%2Dbody%3E%2A%3Alast%2Dchild%20%7B%0Amargin%2Dbottom%3A%200%20%21important%3B%0A%7D%0A%2Emarkdown%2Dbody%20a%3Anot%28%5Bhref%5D%29%20%7B%0Acolor%3A%20inherit%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Eanchor%20%7B%0Aposition%3A%20absolute%3B%0Atop%3A%200%3B%0Aleft%3A%200%3B%0Adisplay%3A%20block%3B%0Apadding%2Dright%3A%206px%3B%0Apadding%2Dleft%3A%2030px%3B%0Amargin%2Dleft%3A%20%2D30px%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Eanchor%3Afocus%20%7B%0Aoutline%3A%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%2C%0A%2Emarkdown%2Dbody%20h2%2C%0A%2Emarkdown%2Dbody%20h3%2C%0A%2Emarkdown%2Dbody%20h4%2C%0A%2Emarkdown%2Dbody%20h5%2C%0A%2Emarkdown%2Dbody%20h6%20%7B%0Aposition%3A%20relative%3B%0Amargin%2Dtop%3A%201em%3B%0Amargin%2Dbottom%3A%2016px%3B%0Afont%2Dweight%3A%20bold%3B%0Aline%2Dheight%3A%201%2E4%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h2%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h3%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h4%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h5%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h6%20%2Eocticon%2Dlink%20%7B%0Adisplay%3A%20none%3B%0Acolor%3A%20%23000%3B%0Avertical%2Dalign%3A%20middle%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%3Ahover%20%2Eanchor%2C%0A%2Emarkdown%2Dbody%20h2%3Ahover%20%2Eanchor%2C%0A%2Emarkdown%2Dbody%20h3%3Ahover%20%2Eanchor%2C%0A%2Emarkdown%2Dbody%20h4%3Ahover%20%2Eanchor%2C%0A%2Emarkdown%2Dbody%20h5%3Ahover%20%2Eanchor%2C%0A%2Emarkdown%2Dbody%20h6%3Ahover%20%2Eanchor%20%7B%0Apadding%2Dleft%3A%208px%3B%0Amargin%2Dleft%3A%20%2D30px%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h2%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h3%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h4%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h5%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0A%2Emarkdown%2Dbody%20h6%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%20%7B%0Apadding%2Dbottom%3A%200%2E3em%3B%0Afont%2Dsize%3A%202%2E25em%3B%0Aline%2Dheight%3A%201%2E2%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23eee%3B%0A%7D%0A%2Emarkdown%2Dbody%20h1%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%3B%0A%7D%0A%2Emarkdown%2Dbody%20h2%20%7B%0Apadding%2Dbottom%3A%200%2E3em%3B%0Afont%2Dsize%3A%201%2E75em%3B%0Aline%2Dheight%3A%201%2E225%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23eee%3B%0A%7D%0A%2Emarkdown%2Dbody%20h2%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%3B%0A%7D%0A%2Emarkdown%2Dbody%20h3%20%7B%0Afont%2Dsize%3A%201%2E5em%3B%0Aline%2Dheight%3A%201%2E43%3B%0A%7D%0A%2Emarkdown%2Dbody%20h3%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E2%3B%0A%7D%0A%2Emarkdown%2Dbody%20h4%20%7B%0Afont%2Dsize%3A%201%2E25em%3B%0A%7D%0A%2Emarkdown%2Dbody%20h4%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E2%3B%0A%7D%0A%2Emarkdown%2Dbody%20h5%20%7B%0Afont%2Dsize%3A%201em%3B%0A%7D%0A%2Emarkdown%2Dbody%20h5%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E1%3B%0A%7D%0A%2Emarkdown%2Dbody%20h6%20%7B%0Afont%2Dsize%3A%201em%3B%0Acolor%3A%20%23777%3B%0A%7D%0A%2Emarkdown%2Dbody%20h6%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E1%3B%0A%7D%0A%2Emarkdown%2Dbody%20p%2C%0A%2Emarkdown%2Dbody%20blockquote%2C%0A%2Emarkdown%2Dbody%20ul%2C%0A%2Emarkdown%2Dbody%20ol%2C%0A%2Emarkdown%2Dbody%20dl%2C%0A%2Emarkdown%2Dbody%20table%2C%0A%2Emarkdown%2Dbody%20pre%20%7B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%2016px%3B%0A%7D%0A%2Emarkdown%2Dbody%20hr%20%7B%0Aheight%3A%204px%3B%0Apadding%3A%200%3B%0Amargin%3A%2016px%200%3B%0Abackground%2Dcolor%3A%20%23e7e7e7%3B%0Aborder%3A%200%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20ul%2C%0A%2Emarkdown%2Dbody%20ol%20%7B%0Apadding%2Dleft%3A%202em%3B%0A%7D%0A%2Emarkdown%2Dbody%20ul%20ul%2C%0A%2Emarkdown%2Dbody%20ul%20ol%2C%0A%2Emarkdown%2Dbody%20ol%20ol%2C%0A%2Emarkdown%2Dbody%20ol%20ul%20%7B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20li%3Ep%20%7B%0Amargin%2Dtop%3A%2016px%3B%0A%7D%0A%2Emarkdown%2Dbody%20dl%20%7B%0Apadding%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20dl%20dt%20%7B%0Apadding%3A%200%3B%0Amargin%2Dtop%3A%2016px%3B%0Afont%2Dsize%3A%201em%3B%0Afont%2Dstyle%3A%20italic%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20dl%20dd%20%7B%0Apadding%3A%200%2016px%3B%0Amargin%2Dbottom%3A%2016px%3B%0A%7D%0A%2Emarkdown%2Dbody%20blockquote%20%7B%0Apadding%3A%200%2015px%3B%0Acolor%3A%20%23777%3B%0Aborder%2Dleft%3A%204px%20solid%20%23ddd%3B%0A%7D%0A%2Emarkdown%2Dbody%20blockquote%3E%3Afirst%2Dchild%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20blockquote%3E%3Alast%2Dchild%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20table%20%7B%0Adisplay%3A%20block%3B%0Awidth%3A%20100%25%3B%0Aoverflow%3A%20auto%3B%0Aword%2Dbreak%3A%20normal%3B%0Aword%2Dbreak%3A%20keep%2Dall%3B%0A%7D%0A%2Emarkdown%2Dbody%20table%20th%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20table%20th%2C%0A%2Emarkdown%2Dbody%20table%20td%20%7B%0Apadding%3A%206px%2013px%3B%0Aborder%3A%201px%20solid%20%23ddd%3B%0A%7D%0A%2Emarkdown%2Dbody%20table%20tr%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Aborder%2Dtop%3A%201px%20solid%20%23ccc%3B%0A%7D%0A%2Emarkdown%2Dbody%20table%20tr%3Anth%2Dchild%282n%29%20%7B%0Abackground%2Dcolor%3A%20%23f8f8f8%3B%0A%7D%0A%2Emarkdown%2Dbody%20img%20%7B%0Amax%2Dwidth%3A%20100%25%3B%0Abox%2Dsizing%3A%20border%2Dbox%3B%0A%7D%0A%2Emarkdown%2Dbody%20code%20%7B%0Apadding%3A%200%3B%0Apadding%2Dtop%3A%200%2E2em%3B%0Apadding%2Dbottom%3A%200%2E2em%3B%0Amargin%3A%200%3B%0Afont%2Dsize%3A%2085%25%3B%0Abackground%2Dcolor%3A%20rgba%280%2C0%2C0%2C0%2E04%29%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23929292%3B%0A%7D%0A%2Emarkdown%2Dbody%20code%3Abefore%2C%0A%2Emarkdown%2Dbody%20code%3Aafter%20%7B%0Aletter%2Dspacing%3A%20%2D0%2E2em%3B%0Acontent%3A%20%22%5C00a0%22%3B%0A%7D%0A%2Emarkdown%2Dbody%20pre%3Ecode%20%7B%0Apadding%3A%200%3B%0Amargin%3A%200%3B%0Afont%2Dsize%3A%20100%25%3B%0Aword%2Dbreak%3A%20normal%3B%0Awhite%2Dspace%3A%20pre%3B%0Abackground%3A%20transparent%3B%0Aborder%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Ehighlight%20%7B%0Amargin%2Dbottom%3A%2016px%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Ehighlight%20pre%2C%0A%2Emarkdown%2Dbody%20pre%20%7B%0Apadding%3A%2016px%3B%0Aoverflow%3A%20auto%3B%0Afont%2Dsize%3A%2085%25%3B%0Aline%2Dheight%3A%201%2E45%3B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Ehighlight%20pre%20%7B%0Amargin%2Dbottom%3A%200%3B%0Aword%2Dbreak%3A%20normal%3B%0A%7D%0A%2Emarkdown%2Dbody%20pre%20%7B%0Aword%2Dwrap%3A%20normal%3B%0A%7D%0A%2Emarkdown%2Dbody%20pre%20code%20%7B%0Adisplay%3A%20inline%3B%0Amax%2Dwidth%3A%20initial%3B%0Apadding%3A%200%3B%0Amargin%3A%200%3B%0Aoverflow%3A%20initial%3B%0Aline%2Dheight%3A%20inherit%3B%0Aword%2Dwrap%3A%20normal%3B%0Abackground%2Dcolor%3A%20transparent%3B%0Aborder%3A%200%3B%0A%7D%0A%2Emarkdown%2Dbody%20pre%20code%3Abefore%2C%0A%2Emarkdown%2Dbody%20pre%20code%3Aafter%20%7B%0Acontent%3A%20normal%3B%0A%7D%0A%2Emarkdown%2Dbody%20kbd%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Apadding%3A%203px%205px%3B%0Afont%2Dsize%3A%2011px%3B%0Aline%2Dheight%3A%2010px%3B%0Acolor%3A%20%23555%3B%0Avertical%2Dalign%3A%20middle%3B%0Abackground%2Dcolor%3A%20%23fcfcfc%3B%0Aborder%3A%20solid%201px%20%23ccc%3B%0Aborder%2Dbottom%2Dcolor%3A%20%23bbb%3B%0Aborder%2Dradius%3A%203px%3B%0Abox%2Dshadow%3A%20inset%200%20%2D1px%200%20%23bbb%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dc%20%7B%0Acolor%3A%20%23969896%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dc1%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Ds%20%2Epl%2Dv%20%7B%0Acolor%3A%20%230086b3%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2De%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Den%20%7B%0Acolor%3A%20%23795da3%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Ds%20%2Epl%2Ds1%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dsmi%20%7B%0Acolor%3A%20%23333%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dent%20%7B%0Acolor%3A%20%2363a35c%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dk%20%7B%0Acolor%3A%20%23a71d5d%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dpds%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Ds%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Ds%20%2Epl%2Dpse%20%2Epl%2Ds1%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dsr%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dsr%20%2Epl%2Dcce%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dsr%20%2Epl%2Dsra%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dsr%20%2Epl%2Dsre%20%7B%0Acolor%3A%20%23183691%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dv%20%7B%0Acolor%3A%20%23ed6a43%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Did%20%7B%0Acolor%3A%20%23b52a1d%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dii%20%7B%0Abackground%2Dcolor%3A%20%23b52a1d%3B%0Acolor%3A%20%23f8f8f8%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dsr%20%2Epl%2Dcce%20%7B%0Acolor%3A%20%2363a35c%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dml%20%7B%0Acolor%3A%20%23693a17%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmh%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dmh%20%2Epl%2Den%2C%0A%2Emarkdown%2Dbody%20%2Epl%2Dms%20%7B%0Acolor%3A%20%231d3e81%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmq%20%7B%0Acolor%3A%20%23008080%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmi%20%7B%0Acolor%3A%20%23333%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmb%20%7B%0Acolor%3A%20%23333%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmd%20%7B%0Abackground%2Dcolor%3A%20%23ffecec%3B%0Acolor%3A%20%23bd2c00%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmi1%20%7B%0Abackground%2Dcolor%3A%20%23eaffea%3B%0Acolor%3A%20%2355a532%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmdr%20%7B%0Acolor%3A%20%23795da3%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Epl%2Dmo%20%7B%0Acolor%3A%20%231d3e81%3B%0A%7D%0A%2Emarkdown%2Dbody%20kbd%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Apadding%3A%203px%205px%3B%0Afont%3A%2011px%20Consolas%2C%20%22Liberation%20Mono%22%2C%20Menlo%2C%20Courier%2C%20monospace%3B%0Aline%2Dheight%3A%2010px%3B%0Acolor%3A%20%23555%3B%0Avertical%2Dalign%3A%20middle%3B%0Abackground%2Dcolor%3A%20%23fcfcfc%3B%0Aborder%3A%20solid%201px%20%23ccc%3B%0Aborder%2Dbottom%2Dcolor%3A%20%23bbb%3B%0Aborder%2Dradius%3A%203px%3B%0Abox%2Dshadow%3A%20inset%200%20%2D1px%200%20%23bbb%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Etask%2Dlist%2Ditem%20%7B%0Alist%2Dstyle%2Dtype%3A%20none%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Etask%2Dlist%2Ditem%2B%2Etask%2Dlist%2Ditem%20%7B%0Amargin%2Dtop%3A%203px%3B%0A%7D%0A%2Emarkdown%2Dbody%20%2Etask%2Dlist%2Ditem%20input%20%7B%0Amargin%3A%200%200%2E35em%200%2E25em%20%2D1%2E6em%3B%0Avertical%2Dalign%3A%20middle%3B%0A%7D%0A%2Emarkdown%2Dbody%20%3Achecked%2B%2Eradio%2Dlabel%20%7B%0Az%2Dindex%3A%201%3B%0Aposition%3A%20relative%3B%0Aborder%2Dcolor%3A%20%234078c0%3B%0A%7D%0A%2F%2F%20info%20boxes%0A%2F%2F%20See%3A%20http%3A%2F%2Fdemos%2Ecyberchimps%2Ecom%2Fresponsivepro%2Fcss%2Dinfo%2Dboxes%2F%0A%2Einfo%2Dbox%2Ewarning%20%7B%0Abackground%2Dcolor%3A%20%23faebeb%3B%0Aborder%3A%201px%20solid%20%23dc7070%3B%0Acolor%3A%20%23212121%3B%0A%7D%0A%2Einfo%2Dbox%2Eexercise%20%7B%0Abackground%2Dcolor%3A%20%23daf1df%3B%0Aborder%3A%202px%20solid%20%2375d78a%3B%0Acolor%3A%20%230b2812%3B%0Apadding%3A%2010px%205px%3B%0A%7D%0A%2Einfo%2Dbox%2Esuccess%20%7B%0Abackground%2Dcolor%3A%20%23f9fde8%3B%0Aborder%3A%201px%20solid%20%23a2bc13%3B%0Acolor%3A%20%23212121%3B%0A%7D%0A%2Einfo%2Dbox%2Einformation%20%7B%0Abackground%2Dcolor%3A%20%23eef3f6%3B%0Aborder%3A%201px%20solid%20%236ca6cd%3B%0Acolor%3A%20%23212121%3B%0A%7D%0A%2Einfo%2Dbox%2Enotice%20%7B%0Abackground%2Dcolor%3A%20%23fbf9e9%3B%0Aborder%3A%201px%20solid%20%23e3cf57%3B%0Acolor%3A%20%23212121%3B%0A%7D%0A%2Einfo%2Dbox%20%7B%0A%2Dmoz%2Dborder%2Dradius%3A%204px%3B%0A%2Dwebkit%2Dborder%2Dradius%3A%204px%3B%0Aborder%2Dradius%3A%204px%3B%0Adisplay%3A%20block%3B%0Amargin%3A%2020px%200%3B%0Apadding%3A%2015px%3B%0Atext%2Dalign%3A%20left%3B%0A%7D%0A" rel="stylesheet" type="text/css" />
+</head>
+<body class="markdown-body">
+<h1 id="using-docker-in-production-get-started-today">Using Docker in production: Get started today!</h1>
+<h2 class="info-box exercise">Demo script</h2>
+<p><em>Tested with Docker Version: Docker CE for AWS (v17.06)</em></p>
+<p><em>A talk by Clarence Bakirtzidis - Email: <a href="mailto:clarence.bakirtzidis@elabor8.com.au">clarence.bakirtzidis@elabor8.com.au</a>, Twitter: <a href="https://twitter.com/clarenceb_oz">@clarenceb_oz</a></em></p>
+<p>We will be using <a href="https://docs.docker.com/docker-for-aws/">Docker for AWS</a> Community Edition (CE).</p>
+<p>There are two ways to deploy Docker for AWS:</p>
+<ul>
+<li>With a pre-existing VPC</li>
+<li>With a new VPC created by Docker</li>
+</ul>
+<p>You can use either the AWS Management Console (browser based) or use the AWS CLI (command-line based).</p>
+<div class="info-box notice">
+<strong>Note</strong>: there will be some costs associated with running through this tutorial on AWS but these costs will be minimal
+</div>
+<p><strong>In this tutorial we will use a new VPC created by Docker and the AWS CLI.</strong></p>
+<h2 class="info-box exercise">Prerequisites</h2>
+<ul>
+<li>Access to an AWS account with permissions to use CloudFormation and to create the following objects (see <a href="https://docs.docker.com/docker-for-aws/iam-permissions/">full set of required permissions</a>):
+<ul>
+<li>EC2 instances + Auto Scaling groups</li>
+<li>IAM profiles</li>
+<li>DynamoDB Tables</li>
+<li>SQS Queue</li>
+<li>VPC + subnets and security groups</li>
+<li>ELB</li>
+<li>CloudWatch Log Group</li>
+</ul></li>
+<li>SSH key in the AWS region where you want to deploy (required to access the completed Docker install)</li>
+<li>AWS account that supports EC2-VPC (See the <a href="https://docs.docker.com/docker-for-aws/faqs/">FAQ for details about EC2-Classic</a>)</li>
+</ul>
+<div class="info-box notice">
+It is recommended that you do not use your AWS root account and instead create a new IAM user.  You can either grant them <a href="https://docs.docker.com/docker-for-aws/iam-permissions/" target="_blank">all these permissions</a> or make them an admin.  We will use a service role with CloudFormation that only has minimum required permissions.
+</div>
+<h2 class="info-box exercise">Install the AWS CLI and configure your AWS access keys</h2>
+<h3 id="installation">Installation</h3>
+<p>Refer to the <a href="https://aws.amazon.com/cli/">AWS Command Line Reference</a>.</p>
+<p>Simplest way to install:</p>
+<h3 id="mac-linux">Mac / Linux:</h3>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># Requires Python 2.6.5 or higher. Install using pip.</span>
+<span class="ex">pip</span> install awscli</code></pre></div>
+<p>or on Mac, using <a href="https://brew.sh/">Homebrew</a>:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">brew</span> install awscli</code></pre></div>
+<h3 id="windows">Windows:</h3>
+<p>Download and run the <a href="https://s3.amazonaws.com/aws-cli/AWSCLI64.msi">64-bit</a> or <a href="https://s3.amazonaws.com/aws-cli/AWSCLI32.msi">32-bit</a> Windows installer.</p>
+<h3 id="configuration">Configuration</h3>
+<p>See the <a href="http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html">Configuring the AWS CLI</a> page.</p>
+<p>For default profile:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">aws</span> configure
+<span class="ex">AWS</span> Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+<span class="ex">AWS</span> Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+<span class="ex">Default</span> region name [None]: ap-southeast-2
+<span class="ex">Default</span> output format [None]: json</code></pre></div>
+<p>For custom profile:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">aws</span> configure --profile dockertutorial
+<span class="ex">AWS</span> Access Key ID [None]: AKIAI44QH8DHBEXAMPLE
+<span class="ex">AWS</span> Secret Access Key [None]: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
+<span class="ex">Default</span> region name [None]: ap-southeast-2
+<span class="ex">Default</span> output format [None]: json</code></pre></div>
+<h2 class="info-box exercise">Exercise: Provision a Docker for AWS cluster</h2>
+<div class="info-box information">
+<strong>Note</strong>: You must have created an EC2 ssh key pair in the desired region before creating the cluster. the keypair name must be called <code>DockerTutorial</code>.
+</div>
+<p>Make a copy of the <code>aws_vars.sh.template</code> file and called it <code>aws_vars.sh</code><br />
+Set the required values environment variables:</p>
+<ul>
+<li><code>AWS_PROFILE</code> or leave blank for default profile</li>
+<li><code>AWS_REGION</code></li>
+<li><code>CF_ROLE_ARN</code> or leave blank to use your IAM user permissions</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./create_stack.sh</span>
+
+<span class="co"># ==&gt;</span>
+<span class="ex">Creating</span> the CloudFormation Stack...
+<span class="kw">{</span>
+    <span class="st">&quot;StackId&quot;</span>: <span class="st">&quot;arn:aws:cloudformation:ap-southeast-2:XXXXXXXXXX:stack/DockerTutorial/7adc6f40-99d5-11e7-a360-50fa575f6862&quot;</span>
+<span class="kw">}</span></code></pre></div>
+<p>After some time, check the status:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./describe_stack.sh</span>
+
+<span class="co"># ==&gt;</span>
+<span class="kw">{</span>
+    <span class="st">&quot;Stacks&quot;</span>:<span class="bu"> [</span>
+        {
+            <span class="st">&quot;StackId&quot;</span>: <span class="st">&quot;arn:aws:cloudformation:ap-southeast-2:899051371423:stack/DockerTutorial/7adc6f40-99d5-11e7-a360-50fa575f6862&quot;</span>,
+            <span class="st">&quot;Description&quot;</span>: <span class="st">&quot;Docker CE for AWS 17.06.1-ce (17.06.1-ce-aws1)&quot;</span>,
+            ...snip...
+            <span class="st">&quot;StackStatus&quot;</span>: <span class="st">&quot;CREATE_IN_PROGRESS&quot;</span>,
+            ...snip...
+
+        }
+    ]
+}</code></pre></div>
+<div class="info-box information">
+When the stack is ready, the <code>StackStatus</code> will be <code>CREATE_COMPLETE</code>.
+If the stack creation fails, the <code>StackStatus</code> will be <code>ROLLBACK_COMPLETE</code>.
+</div>
+<div class="info-box notice">
+<strong>For the demo</strong>: Open AWS Console in a tab to show ELB, instances, etc.
+</div>
+<h2 class="info-box exercise">Exercise: Setup the local environment to talk to a Swarm Manager</h2>
+<p>Find a Docker Swarm Manager instance public IP:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./get_manager_ips.sh</span>
+
+<span class="co"># ==&gt;</span>
+<span class="ex">54.79.9.120</span></code></pre></div>
+<p>First, add your SSH keypair PEM file to your SSH agent or keychain:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># Use the path to your SSH keypair PEM file location:</span>
+<span class="fu">ssh-add</span> ~/.ssh/DockerTutorial.pem</code></pre></div>
+<p>You can SSH directly to the Docker manager like so:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">ssh</span> -A docker@54.79.9.120
+<span class="ex">docker</span> ps
+<span class="bu">exit</span></code></pre></div>
+<p>But since we want to use scripts and config files locally, we will open an SSH tunnel instead.</p>
+<p>Open an ssh tunnel to the manager so you can use <code>docker</code> commands directly with the Docker for AWS swarm.</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./ssh_tunnel.sh</span> 54.79.9.120
+
+<span class="co"># ==&gt;</span>
+<span class="ex">Type</span>: export DOCKER_HOST=localhost:2374</code></pre></div>
+<p>Set the <code>DOCKER_HOST</code> environment variable and test connection to the Docker swarm manager:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">export</span> <span class="va">DOCKER_HOST=</span>localhost:2374
+<span class="ex">docker</span> info
+
+<span class="co"># ==&gt;</span>
+<span class="ex">...snip...</span>
+<span class="ex">Server</span> Version: 17.06.1-ce
+<span class="ex">...snip...</span>
+<span class="ex">Labels</span>:
+ <span class="va">os=</span>linux
+ <span class="va">region=</span>ap-southeast-2
+ <span class="va">availability_zone=</span>ap-southeast-2b
+ <span class="va">instance_type=</span>t2.small
+ <span class="va">node_type=</span>manager
+<span class="ex">...snip...</span></code></pre></div>
+<div class="info-box information">
+The Labels can be used with placement constraints or <a href="https://docs.docker.com/engine/swarm/services/#specify-service-placement-preferences-placement-pref" target="_blank">preferences</a> (e.g. to evenly distribute services across AZs, not just nodes), e.g.
+<br />
+<pre class="sourceCode">
+docker service create \
+  --replicas 9 \
+  --name redis_2 \
+  --placement-pref 'spread=node.labels.availability_zone' \
+  redis:3.0.6</pre></div>
+<h2 class="info-box exercise">Exercise: Verify your swarm nodes are up and running</h2>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> node ls
+
+<span class="co"># ==&gt;</span>
+<span class="ex">ID</span>                            HOSTNAME                                           STATUS              AVAILABILITY        MANAGER STATUS
+<span class="ex">6r7o5rv4x3pv3757ik2y5jm6j</span> *   ip-172-31-21-75.ap-southeast-2.compute.internal    Ready               Active              Leader
+<span class="ex">a3o4uvlpdtrbcpxwu9hou4fsf</span>     ip-172-31-10-93.ap-southeast-2.compute.internal    Ready               Active
+<span class="ex">i75ybtjkpdfq2dm8v0lojj7mo</span>     ip-172-31-38-221.ap-southeast-2.compute.internal   Ready               Active
+<span class="ex">q3dmtefzvtd075rsfdgl8dxxp</span>     ip-172-31-25-160.ap-southeast-2.compute.internal   Ready               Active</code></pre></div>
+<h2 class="info-box exercise optional">(Optional) Exercise: Running the app locally</h2>
+<p>If you have Docker setup on your local machine (e.g. for Mac or Docker for Windows) then you can test out the app locally using <code>docker-compose</code>:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">unset</span> <span class="va">DOCKER_HOST</span>
+<span class="bu">cd</span> voting-app
+<span class="ex">docker-compose</span> -f ./docker-stack.yml up -d
+<span class="co"># This may take a couple of minutes...</span>
+<span class="ex">docker-compose</span> ps
+
+<span class="co"># ==&gt;</span>
+       <span class="ex">Name</span>                     Command               State            Ports
+<span class="ex">-------------------------------------------------------------------------------------</span>
+<span class="ex">votingapp_db_1</span>       docker-entrypoint.sh postgres    Up      5432/tcp
+<span class="ex">votingapp_redis_1</span>    docker-entrypoint.sh redis ...   Up      0.0.0.0:32768-<span class="op">&gt;</span>6379/tcp
+<span class="ex">votingapp_result_1</span>   node server.js                   Up      0.0.0.0:5001-<span class="op">&gt;</span>80/tcp
+<span class="ex">votingapp_vote_1</span>     gunicorn app:app -b 0.0.0. ...   Up      0.0.0.0:5000-<span class="op">&gt;</span>80/tcp
+<span class="ex">votingapp_worker_1</span>   /bin/sh -c dotnet src/Work ...   Up</code></pre></div>
+<p>Browse to <a href="http://localhost:5000"><code>http://localhost:5000</code></a> for the Vote interface.<br />
+Browse to <a href="http://localhost:5001"><code>http://localhost:5001</code></a> for the Result interface.</p>
+<p>Check the Swarm Visualiser - nothing? Why?</p>
+<p>Stop and remove the local application:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker-compose</span> down</code></pre></div>
+<p>Deploy the same Docker Compose project as a &quot;stack&quot; to the local host:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># Confirm the local instance is a single swarm node:</span>
+<span class="ex">docker</span> node ls
+<span class="co"># If not a swarm, use `swarm init` first.</span></code></pre></div>
+<p>Deploy the stack:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack deploy votingapp -c ./docker-stack.yml
+<span class="ex">docker</span> stack ls</code></pre></div>
+<p>Now, check the Swarm Visualiser.</p>
+<p>Remove the local stack:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack rm votingapp</code></pre></div>
+<p>Reset the local env to point back to the Docker for AWS manager:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> ..
+<span class="bu">export</span> <span class="va">DOCKER_HOST=</span>localhost:2374
+<span class="ex">docker</span> node ls</code></pre></div>
+<h2 class="info-box exercise">Exercise: Deploy voting app to Docker for AWS</h2>
+<p>Use <code>docker stack deploy</code> with the Docker Compose V3 format YAML file to deploy the app onto the swarm:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack deploy votingapp --compose-file voting-app/docker-stack.yml
+
+<span class="co"># ==&gt;</span>
+<span class="ex">Creating</span> network votingapp_backend
+<span class="ex">Creating</span> network votingapp_frontend
+<span class="ex">Creating</span> network votingapp_default
+<span class="ex">Creating</span> service votingapp_db
+<span class="ex">Creating</span> service votingapp_vote
+<span class="ex">Creating</span> service votingapp_result
+<span class="ex">Creating</span> service votingapp_worker
+<span class="ex">Creating</span> service votingapp_visualizer
+<span class="ex">Creating</span> service votingapp_redis</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack ls
+
+<span class="co"># ==&gt;</span>
+<span class="ex">NAME</span>                SERVICES
+<span class="ex">votingapp</span>           6</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> service ls
+
+<span class="co"># ==&gt;</span>
+<span class="ex">ID</span>                  NAME                   MODE                REPLICAS            IMAGE                                          PORTS
+<span class="ex">f0t0bqff6opc</span>        votingapp_redis        replicated          1/1                 redis:alpine                                   *:0-<span class="op">&gt;</span>6379/tcp
+<span class="ex">ge4vah4nc0mp</span>        votingapp_db           replicated          1/1                 postgres:9.4
+<span class="ex">ndm6ytoqvaz4</span>        votingapp_visualizer   replicated          1/1                 dockersamples/visualizer:stable                *:8080-<span class="op">&gt;</span>8080/tcp
+<span class="ex">uwk4s3y27pud</span>        votingapp_worker       replicated          1/1                 dockersamples/examplevotingapp_worker:latest
+<span class="ex">vbhjil2sk8z1</span>        votingapp_result       replicated          1/1                 dockersamples/examplevotingapp_result:before   *:5001-<span class="op">&gt;</span>80/tcp
+<span class="ex">w5rt9x4bt6sw</span>        votingapp_vote         replicated          2/2                 dockersamples/examplevotingapp_vote:before     *:5000-<span class="op">&gt;</span>80/tcp
+
+<span class="co"># You can also see the tasks for a service:</span>
+<span class="ex">docker</span> service ps votingapp_vote</code></pre></div>
+<p>To access the voting app that is deployed to the swarm, you will need the ELB name:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./get_elb_names.sh</span>
+
+<span class="co"># ==&gt;</span>
+<span class="st">&quot;DNSName&quot;</span>: <span class="st">&quot;DockerTut-External-P2N78KBI3BAI-1241970304.ap-southeast-2.elb.amazonaws.com&quot;</span>,</code></pre></div>
+<p>You can now access each service which have published ports at:</p>
+<p><code>http://DockerTut-External-P2N78KBI3BAI-1241970304.ap-southeast-2.elb.amazonaws.com:&lt;published_port&gt;</code></p>
+<p>Try accessing the exposed services:</p>
+<ul>
+<li>Vote : <code>http://&lt;elb_dns_name&gt;:5000</code></li>
+<li>Result : <code>http://&lt;elb_dns_name&gt;:5001</code></li>
+<li>Visualizer : <code>http://&lt;elb_dns_name&gt;:8080</code></li>
+</ul>
+<div class="info-box information">
+<strong>Note</strong>: These are exposed as HTTP by default since the ELB is not terminating TLS.  It is acting as a Layer 4 LB and reverse proxy.  This feature is setup automatically as part of Docker for AWS.
+</div>
+<p>Later we will expose services using TLS termination on the ELB.</p>
+<h2 class="info-box exercise">Exercise: Check the Swarm Visualiser (via ELB DNS NAME)</h2>
+<p>Browse to the Swarm Visualizer : <code>http://&lt;elb_dns_name&gt;:8080</code></p>
+<p>Undeploy the stack so we can use a custom reverse proxy as the entrypoint to the swarm:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack rm votingapp</code></pre></div>
+<h2 class="info-box exercise">Exercise: Deploy Traefik reverse proxy</h2>
+<p>The Docker for AWS setup currently only creates an ELB (Layer 4) not an ALB (Layer 7). This means we have to use a custom Layer 7 reverse proxy to route to our services in the swarm over a single port (443 or 80).</p>
+<p>We will use a Traefik service with a published port on port 443 to handle internal routing on the swarm ingress load balancer (routing mesh).</p>
+<h3 id="with-a-custom-domain-name-acm-certificate-and-route-53-dns-setup">With a custom domain name, ACM certificate and Route 53 DNS setup</h3>
+<p>We will use a custom domain name and ACM wildcard certificate to get TLS termination working on the ELB and then use Traefik to route to services internally in the swarm via a host header.</p>
+<h4 id="prerequisites">Prerequisites</h4>
+<p>You will need to have registered a custom domain name (e.g. <code>mydomain.com</code>)</p>
+<p>In Route 53, create a Hosted Zone for your domain.</p>
+<p>In your DNS registrar, point it to at least two of the DNS servers assigned by AWS (in your NS record).</p>
+<p>Create a host wildcard record in your hosted zone (A record of type alias):</p>
+<pre><code>        Name: *.mydomain.com
+        Type: A - IPv4 address
+       Alias: Yes
+Alias Target: &lt;Select your ELB DNS NAme from the list&gt;</code></pre>
+<p>Leave the remaining fields as is.<br />
+Create the record.</p>
+<p>Go to Amazon Certificate Manager and create a free wildcard certificate for your domain: <code>*.mydomain.com</code></p>
+<p>Approve the certificate request in your email.</p>
+<p>Record the ARN for the ACM certificate, e.g: <code>arn:aws:acm:ap-southeast-2:XXXXXXXXXXXX:certificate/e807ff24-1988-428e-a326-8ed928d535b6</code></p>
+<p>This will be needed for Traefik later.</p>
+<p>Copy the file <code>prod.env.template</code> to <code>prod.env</code> and update the environment variables with your domain name and ACM certificate ARN:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="va">DOMAIN_NAME=</span><span class="op">&lt;</span><span class="ex">your_domain</span><span class="op">&gt;</span>
+<span class="va">ACM_CERT_ARN=</span><span class="op">&lt;</span><span class="ex">your_acm_cert_arn</span><span class="op">&gt;</span></code></pre></div>
+<h4 id="start-exercise">Start exercise</h4>
+<p>Create the overlay network for Traefik and other services to communicate within the swarm:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> network create -d overlay traefik</code></pre></div>
+<p>Deploy the Traefik stack to the swarm:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-traefik.yml prod.env</code></pre></div>
+<p>Browse to the Traefik dashboard: <a href="http://traefik.dockertutorial.technology:8000/" class="uri">http://traefik.dockertutorial.technology:8000/</a><br />
+(No services displayed yet.)</p>
+<p>Deploy the Voting App stack to the swarm:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-votingapp.yml prod.env</code></pre></div>
+<p>Let's check our stacks:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack ls
+
+<span class="co"># ==&gt;</span>
+<span class="ex">NAME</span>                SERVICES
+<span class="ex">traefik</span>             1
+<span class="ex">votingapp</span>           5</code></pre></div>
+<p>Thanks to Traefik, we can now browse to the vote and result apps:</p>
+<p>Browse to: <a href="https://vote.dockertutorial.technology" class="uri">https://vote.dockertutorial.technology</a><br />
+Browse to: <a href="https://result.dockertutorial.technology" class="uri">https://result.dockertutorial.technology</a></p>
+<p>TLS is <a href="https://docs.docker.com/docker-for-aws/load-balancer/">setup automatically for us in the ELB</a> by the <code>com.docker.aws.lb.arn</code> label:</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">traefik:</span>
+  <span class="fu">deploy:</span>
+    ...snip...
+    <span class="fu">labels:</span>
+      ...snip...
+      <span class="kw">-</span> <span class="st">&quot;com.docker.aws.lb.arn=${ACM_CERT_ARN}&quot;</span></code></pre></div>
+<h3 id="alternative-no-custom-domain-or-tls-certificate">Alternative: no custom domain or TLS certificate</h3>
+<p>There will be no TLS termination on the ELB using this method (Traefik does supports TLS itself but that is beyond the scope of this tutorial).</p>
+<p>Your options here are:</p>
+<ol>
+<li>Don't use Traefik at all - just add published ports to the services you want to expose via the ELB and use the ELB DNS Name to access them</li>
+<li>Use Traefik with <a href="https://docs.traefik.io/basics/">Path Routing</a> instead of Host Header routing, e.g. <code>traefik.frontend.rule=Path:/vote</code></li>
+</ol>
+<p>Through this tutorial, when you see a URL like: <code>https://vote.dockertutorial.technology</code>, change it to <code>http(s)://&lt;ELB_DNS_Name&gt;(:port|/path)</code> depending on your configuration choice above.</p>
+<p>Copy the file <code>prod.env.template</code> to <code>prod.env</code> and update the environment variables with empty values (since they won't be required):</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="va">DOMAIN_NAME=</span>
+<span class="va">ACM_CERT_ARN=</span></code></pre></div>
+<h2 class="info-box exercise">Exercise: Deploy the Swarm Visualizer (using Traefik reverse proxy)</h2>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-visualizer.yml prod.env</code></pre></div>
+<p>Browse to: <a href="https://visualizer.dockertutorial.technology" class="uri">https://visualizer.dockertutorial.technology</a></p>
+<h2 class="info-box exercise">Exercise: Get audience to vote via the custom domain</h2>
+<p>Which the most popular pet? Cats or Dogs?</p>
+<p>Browse to: <a href="https://vote.dockertutorial.technology" class="uri">https://vote.dockertutorial.technology</a> on your mobiles.<br />
+Check results at: <a href="https://result.dockertutorial.technology" class="uri">https://result.dockertutorial.technology</a></p>
+<h2 class="info-box exercise">Exercise: Deploy Portainer</h2>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-portainer.yml prod.env</code></pre></div>
+<p>Browse to: <a href="https://portainer.dockertutorial.technology" class="uri">https://portainer.dockertutorial.technology</a></p>
+<p><strong>Note</strong>: Normally, you would use a <a href="https://portainer.readthedocs.io/en/stable/deployment.html#persist-portainer-data">persistent volume for Portainer</a> to retain state. In this demo we will not use a volume.</p>
+<p>Scale up the vote service to 2 containers then try voting and see that different containers process the vote.</p>
+<p>In Portainer, check the logs (e.g. traefik) and console (e.g. db) for a running container.</p>
+<p><strong>Note:</strong> Exposing Portainer is a security risk - do not expose it publicly!</p>
+<h2 class="info-box exercise">Exercise: Deploy Logging</h2>
+<p>Containers can use one of <a href="https://docs.docker.com/engine/admin/logging/overview/">several drivers</a> to ship logs.</p>
+<p><code>docker logs</code> / <code>docker-compose logs</code> / <code>docker service logs</code> only work with the default <code>json-file</code> logging driver.</p>
+<p>The containers in the Docker for AWS cluster are already configured to send all their logs to AWS CloudWatch Logs. This is not the easily interface to use in the AWS Console. You can ship elsewhere from here. For the demo, we'll use EFK stack to ship to a private Elasticsearch server.</p>
+<div class="info-box information">
+<strong>Note</strong>: In production, you’ll need to consider HA, scaling, data backup and retention, security, disaster recovery, etc.
+<br /><br />
+<strong>Note</strong>: Fluentd is exposed publicly due to limitations of the Docker for AWS setup.  You can create additional security groups or setup NACLs to block access.  In Docker EE you can configure UCP logging to ship logs to Elasticsearch.
+</div>
+<h4 id="start-exercise-1">Start exercise</h4>
+<p>Create the logging network:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> network create -d overlay logging</code></pre></div>
+<p>Deploy the logging stack:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-logging.yml prod.env</code></pre></div>
+<p>Check that the logging stack and services are up and running:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack ls
+<span class="ex">docker</span> service ls --filter name=logging</code></pre></div>
+<p>Check the Kibana dashboard:</p>
+<p>Browse to: <a href="https://kibana.dockertutorial.technology" class="uri">https://kibana.dockertutorial.technology</a></p>
+<p>No logs?</p>
+<p>Update the <code>votingapp</code> stack to connect to the <code>logging</code> network and add the fluentd logging options, then re-deploy.</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-votingapp.yml prod.env</code></pre></div>
+<p>Only services that have changed will be restarted.</p>
+<p>In Kibana, click <strong>refresh fields</strong> to configure the index pattern then click Create.</p>
+<p>Go to the <strong>Discover</strong> view - logs should now appear.</p>
+<p>Select the container_name, log, and message fields.<br />
+Auto-refresh every 10 secs.</p>
+<p>Try voting a few times then check the logs (try query: <code>Processing vote for '?'</code>)</p>
+<h2 class="info-box exercise optional">(Optional) Exercise: Create a visualisation in Kibana</h2>
+<p>Create a visualisation for a tally of all votes for Cats and Dogs:</p>
+<ul>
+<li>Click <strong>Visualize</strong></li>
+<li>Click <strong>Create Visualization</strong></li>
+<li>Select <code>Metric</code> as the visualization type</li>
+<li>Select the <code>logstash-*</code> index</li>
+<li>Select <code>count</code> for Metric</li>
+<li>Select <code>Filters</code> under Split group / Aggregation</li>
+<li>Filter 1: &quot;Processing vote for 'a'&quot;</li>
+<li>Label 1: Cats</li>
+<li>Click <strong>Add Filter</strong></li>
+<li>Filter 2: &quot;Processing vote for 'b'&quot;</li>
+<li>Label 2: Dogs</li>
+<li>Click <strong>Save</strong></li>
+<li>Enter &quot;Vote Tally&quot;</li>
+</ul>
+<div class="info-box notice">
+<strong>Note</strong>: Make sure no filter is added to the query at the top.
+</div>
+<p>Create a dashboard which includes the &quot;Vote Tally&quot; visualisation:</p>
+<ul>
+<li>Click <strong>Dashboard</strong></li>
+<li>Click <strong>Create a dashboard</strong></li>
+<li>Click <strong>Add</strong></li>
+<li>Select 'Vote Tally'</li>
+<li>Click <strong>Save</strong></li>
+<li>Maximise the dashboard</li>
+</ul>
+<p>Try voting a few times then check the dashboard.</p>
+<p>Any data that is logged can be searched and made into a dashboard for key performance or business metrics.</p>
+<h2 class="info-box exercise optional">(Optional) Exercise: Volumes - Handling application state in the cluster</h2>
+<p>In a cluster, application state should not be kept inside containers. However, if we use host volumes, then the data is not portable -- we need to use constraints on services to limit where they can run which is not very practical.</p>
+<p>Various Docker Volume plugins exist to help solve this problem. With Docker for AWS, the <a href="https://docs.docker.com/docker-for-aws/persistent-data-volumes">Cloudstor plugin</a> is setup which supports EBS and EFS based backing stores. This driver enables data to travel with the service tasks (containers) even when they get rescheduled.</p>
+<h3 id="without-portable-volumes">Without portable volumes</h3>
+<p>If we move the DB container to another host then we'll loose state in the DB.</p>
+<p>Check the Results: <a href="https://result.dockertutorial.technology/" class="uri">https://result.dockertutorial.technology/</a><br />
+There should be some votes.</p>
+<p>Check the Visualizer: <a href="https://visualizer.dockertutorial.technology/" class="uri">https://visualizer.dockertutorial.technology/</a><br />
+The voting app database should be running on the manager node.</p>
+<p>Update the <code>db</code> service contraint in <code>voting-app/docker-stack-votingapp.yml</code> to be:</p>
+<p><code>constraints: [node.role != manager]</code></p>
+<p>Re-deploy the votingapp:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-votingapp.yml prod.env</code></pre></div>
+<p>Make sure db has moved to a different host.</p>
+<p>Check the Results: <a href="https://result.dockertutorial.technology/" class="uri">https://result.dockertutorial.technology/</a><br />
+There should no votes -- the state was lost since the host volume was left on the manager node and a new one was created.</p>
+<p>If result is now showing anything (not votes in the bottom right corner), you might need to scale result to 0 then back to 1:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> service scale votingapp_result=0
+<span class="co"># wait a bit...</span>
+<span class="ex">docker</span> service scale votingapp_result=1</code></pre></div>
+<h3 id="with-volumes-using-cloudstor-volume-plugin">With Volumes (using Cloudstor volume plugin)</h3>
+<p>Let's create a portal volume using EFS and the CloudStor volume plugin.</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> volume create -d <span class="st">&quot;cloudstor:aws&quot;</span> --opt backing=shared db-votes</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> volume ls
+<span class="ex">DRIVER</span>              VOLUME NAME
+<span class="ex">...snip...</span>
+<span class="ex">cloudstor</span>:aws       db-votes
+<span class="ex">...snip...</span></code></pre></div>
+<p>This will use EFS (for DBs with a lot of writes, you should use EBS but moving EBS volumes between hosts is a slower process so for the demo we use EFS).</p>
+<p>Update the voting app stack to use the external <code>db-votes</code> volume:</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">volumes:</span>
+  <span class="fu">db-data:</span>
+  <span class="fu">db-votes:</span>
+    <span class="fu">external:</span><span class="at"> true</span></code></pre></div>
+<p>Update the <code>db</code> service to use the new volume:</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">db:</span>
+  <span class="fu">image:</span><span class="at"> postgres:9.4</span>
+  <span class="fu">volumes:</span>
+    <span class="kw">-</span> <span class="fu">db-votes:</span><span class="at">/var/lib/postgresql/data</span></code></pre></div>
+<p>You can remove the placement constraint too:</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="co"># deploy:</span>
+  <span class="co"># placement:</span>
+    <span class="co"># constraints: [node.role != manager]</span></code></pre></div>
+<p>Re-deploy the voting app:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-votingapp.yml prod.env</code></pre></div>
+<p>Create some votes: <a href="https://vote.dockertutorial.technology/" class="uri">https://vote.dockertutorial.technology/</a></p>
+<p>Check the Results: <a href="https://result.dockertutorial.technology/" class="uri">https://result.dockertutorial.technology/</a></p>
+<p>If you need to move the <code>db</code> service (without draining a whole node) try:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> service scale votingapp_db=0
+<span class="co"># wait a bit...</span>
+<span class="ex">docker</span> service scale votingapp_db=1</code></pre></div>
+<h2 class="info-box exercise">Exercise: Scaling up / down services</h2>
+<p>Scale up some of the services and check Kibana logs:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> service scale votingapp_worker=3
+<span class="ex">docker</span> service scale votingapp_vote=3</code></pre></div>
+<p>Reload the vote page: <a href="https://vote.dockertutorial.technology/" class="uri">https://vote.dockertutorial.technology/</a></p>
+<p>Try voting a few times - notice that a different container processes the vote each time (this is load-balancing provided by swarm mode).</p>
+<h2 class="info-box exercise">Exercise: Drain node</h2>
+<p>Pick a node (not master) and not the one with the <code>db</code> on it.</p>
+<p>Use <code>docker node ls</code> to find the right one.</p>
+<p>Set it to <code>drain</code> to move containers:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> node update --availability=drain a3o4uvlpdtrbcpxwu9hou4fsf</code></pre></div>
+<p>Check the Visualizer: <a href="https://visualizer.dockertutorial.technology/" class="uri">https://visualizer.dockertutorial.technology/</a></p>
+<p>All containers have moved off this node. Now you can perform any maintenance or leave it as is (common for manager nodes).</p>
+<p>Let's set it back to <code>active</code>:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> node update --availability=active a3o4uvlpdtrbcpxwu9hou4fsf</code></pre></div>
+<h2 class="info-box exercise">Exercise: Swarm Service Rolling updates</h2>
+<p>When deploying updates to services (e.g. new image or config/secrets/env vars), swarm uses a rolling update strategy to achieve zero-downtime deployment (you can combine this with built-in <a href="https://docs.docker.com/compose/compose-file/#healthcheck">healthchecks</a>).</p>
+<p>See the Compose file:</p>
+<pre><code>deploy:
+  replicas: 1
+  update_config:
+    parallelism: 2
+    delay: 10s</code></pre>
+<p>This means 2 containers will be updated at a time with a 10 sec delay between groups of containers. you can also set a <code>failure_action</code> (e.g. to <code>rollback</code> or <code>continue</code> or <code>pause</code>).</p>
+<p>Let's make a config change using environment variables and roll out the change to the <code>vote</code> instances.</p>
+<p>In the <code>vote</code> service, add:</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">environment:</span>
+  <span class="fu">OPTION_A:</span><span class="at"> Pigs</span>
+  <span class="fu">OPTION_B:</span><span class="at"> Hamsters</span></code></pre></div>
+<p>Also set replicas to <code>3</code> for the <code>vote</code> service:</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">deploy:</span>
+  <span class="fu">replicas:</span><span class="at"> 3</span></code></pre></div>
+<p>Deploy the <code>votingapp</code> stack again to perform a rolling update:</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-votingapp.yml prod.env</code></pre></div>
+<p>And watch the Visualizer: <a href="https://visualizer.dockertutorial.technology/" class="uri">https://visualizer.dockertutorial.technology/</a></p>
+<h2 class="info-box exercise">Exercise: Deploy Monitoring</h2>
+<p>For this demo we'll deploy a monitoring stack consisting off: cAdvisor (host/container meterics) + Prometheus (server + alarm manager) + Grafana (dashboard)</p>
+<p>Alternatives:</p>
+<ul>
+<li>Sysdig, Datadog, CloudWatch, APM tools (Dynatrace, AppDynamics, etc.)</li>
+</ul>
+<p>UCP provides some monitoring too: <a href="https://docs.docker.com/datacenter/ucp/1.1/monitor/monitor-ucp/" class="uri">https://docs.docker.com/datacenter/ucp/1.1/monitor/monitor-ucp/</a></p>
+<p>We'll use this setup as it works: <a href="https://github.com/bvis/docker-prometheus-swarm" class="uri">https://github.com/bvis/docker-prometheus-swarm</a> and its dashboard: <a href="https://grafana.com/dashboards/609" class="uri">https://grafana.com/dashboards/609</a></p>
+<h3 id="create-config-for-prometheus">Create config for Prometheus</h3>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> config create prometheus.yml docker-prometheus-swarm/rootfs/etc/prometheus_custom/prometheus.yml
+<span class="ex">docker</span> config create alert.rules_services docker-prometheus-swarm/rootfs/etc/prometheus_custom/alert.rules_services
+
+<span class="co"># Check config exists</span>
+<span class="ex">docker</span> config ls</code></pre></div>
+<p><strong>Note</strong>: Swarm supports secrets too, there are encrypted.</p>
+<h3 id="deploy-the-monitoring-stack">Deploy the monitoring stack</h3>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./deploy_stack.sh</span> voting-app/docker-stack-monitoring.yml prod.env</code></pre></div>
+<p>Check the monitoring services:</p>
+<p>Browse to: <a href="https://alertmanager.dockertutorial.technology" class="uri">https://alertmanager.dockertutorial.technology</a><br />
+Browse to: <a href="https://prometheus.dockertutorial.technology" class="uri">https://prometheus.dockertutorial.technology</a><br />
+Browse to: <a href="https://alertmanager.dockertutorial.technology" class="uri">https://alertmanager.dockertutorial.technology</a><br />
+Browse to: <a href="https://grafana.dockertutorial.technology" class="uri">https://grafana.dockertutorial.technology</a></p>
+<p>Import the JSON dashboard: <code>docker-prometheus-swarm/dashboards/docker-swarm-container-overview_rev23_no_logging.json</code></p>
+<p>Inspect some of the metrics available.</p>
+<h2 class="info-box exercise">Exercise: Teardown</h2>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span> stack rm logging monitoring portainer traefik votingapp visualizer
+<span class="ex">docker</span> network prune -f
+<span class="ex">docker</span> volume prune -f
+<span class="ex">docker</span> container prune -f
+<span class="co"># If you want to remove all unused images and reclaim space</span>
+<span class="co">#docker image prune -f</span>
+<span class="ex">docker</span> config rm prometheus.yml alert.rules_services</code></pre></div>
+<h2 class="info-box exercise">Delete the CloudFormation stack</h2>
+<p>Clean up all AWS resources.</p>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">./delete_stack.sh</span></code></pre></div>
+<h2 class="info-box exercise">Credits</h2>
+<p>The voting app was copied from Docker Samples:</p>
+<ul>
+<li><a href="https://github.com/dockersamples/example-voting-app" class="uri">https://github.com/dockersamples/example-voting-app</a></li>
+</ul>
+<p>Monitoring dashboard and Docker Compose file - <a href="https://github.com/bvis">Basilio Vera</a>:</p>
+<ul>
+<li><a href="https://github.com/bvis/docker-prometheus-swarm" class="uri">https://github.com/bvis/docker-prometheus-swarm</a></li>
+</ul>
+<hr />
+<p><em>Copyright (c) 2017 <a href="https://elabor8.com.au/" target="_blank">Elabor8 Pty Ltd</a>. License: <a href="https://opensource.org/licenses/MIT" target="_blank">The MIT License</a> (see <code>LICENSE.txt</code>).</em></p>
+</body>
+</html>
