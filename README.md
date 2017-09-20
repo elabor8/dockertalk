@@ -2,8 +2,10 @@ Using Docker in production: Get started today!
 ==============================================
 
 <h2 class="info-box exercise">Preamble</h2>
-View the <a href="https://www.slideshare.net/clarenceb/using-docker-in-production-get-started-today" target="_blank">slides for the talk</a> (SlideShare)
-You can view the instructions (`README.md`) in a Markdown viewer (e.g. on Github) or you can open the HTML version (`README.html`) which is more colourful :)
+<ul>
+<li>View the <a href="https://www.slideshare.net/clarenceb/using-docker-in-production-get-started-today" target="_blank">slides for the talk</a> (SlideShare)</li>
+<li>You can view the instructions (<code>README.md</code>) in a Markdown viewer (e.g. on Github) or you can open the HTML version (<code>README.html</code>) which is more colourful :)</li>
+</ul>
 </h2>
 
 <h2 class="info-box exercise">Demo script</h2>
