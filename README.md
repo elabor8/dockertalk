@@ -1,6 +1,11 @@
 Using Docker in production: Get started today!
 ==============================================
 
+<h2 class="info-box exercise">Preamble</h2>
+View the <a href="https://www.slideshare.net/clarenceb/using-docker-in-production-get-started-today" target="_blank">slides for the talk</a> (SlideShare)
+You can view the instructions (`README.md`) in a Markdown viewer (e.g. on Github) or you can open the HTML version (`README.html`) which is more colourful :)
+</h2>
+
 <h2 class="info-box exercise">Demo script</h2>
 
 *Tested with Docker Version: Docker CE for AWS (v17.06)*
