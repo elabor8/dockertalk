@@ -808,10 +808,11 @@ Inspect some of the metrics available.
 
 ```sh
 docker stack rm logging monitoring portainer traefik votingapp visualizer
-docker network prune
-docker volume prune
-docker container prune
-docker image prune # If you want to remove all unused images and reclaim space
+docker network prune -f
+docker volume prune -f
+docker container prune -f
+# If you want to remove all unused images and reclaim space
+#docker image prune -f
 docker config rm prometheus.yml alert.rules_services
 ```
 
